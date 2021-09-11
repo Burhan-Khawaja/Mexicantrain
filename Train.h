@@ -13,10 +13,14 @@ public:
     void resetTrain();
     void clearMarker();
     void setMarker();
+    bool getMarker();
     void printTrain();
+    void setOrphanDouble();
+    void resetOrphanDouble();
+    bool getOrphanDouble();
 protected:
 private:
     bool marker;
     std::deque<Tile> trainDeque;
-
+    bool orphanDouble;
 };
