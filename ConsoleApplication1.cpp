@@ -75,6 +75,16 @@ void trainTesting() {
         testTrain.addTileFront(Tile(i, i));
     }
     testTrain.printTrain();
+
+    //orphan double function testing
+    testTrain.setOrphanDouble();//sets orphan double to true
+    if (testTrain.getOrphanDouble() == false) {
+        std::cout << "ERROPR ERRORERROR THIS STATEMENT HSOULD NOT EXECUTE.";
+    }
+    testTrain.resetOrphanDouble();
+    if (testTrain.getOrphanDouble() == false) {
+        std::cout << "\nThe train's orphan boolean has been reset.";
+    }
 }
 
 void playerTesting() {
@@ -83,8 +93,8 @@ void playerTesting() {
     humanTest = new Human;
     computerTest = new Computer;
     Tile testTile(3, 4);
-    humanTest->addTile(testTile);
-    computerTest->addTile(testTile);
+    humanTest->addTileToHand(testTile);
+    computerTest->addTileToHand(testTile);
 
 }
 

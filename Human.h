@@ -5,7 +5,8 @@
 class Human : public Player {
 public:
     Human();
-    void addTile(Tile tileToAdd);
+    void addTileToHand(Tile tileToAdd);
+    void addTileToTrain(Tile tileToAdd);
 protected:
 private:
 
