@@ -29,19 +29,33 @@ public:
     void printTrainAndEngine();
     void printHands();
     void playerHasTile(Tile tileToCheck);
+    //function could be here but it could also fgit in player class.
     void tileFitsOnTrain(Tile tileToCheck);
     Tile drawFromBoneyard();
     //check human train for marker
     bool getHumanTrainMarker();
     bool getComputerTrainMarker();
-
+    //1 function to check forr computer or player?
+    //we could do 2 functions, checkHumansPlayableTrains(), and checkComputerPlayableTrains.
+    bool checkOrphanDoubles();
+    void checkHumansPlayableTrains();
+    void checkComputerPlayableTrains();
+    void resetPlayableTrains();
+    bool getHumanTrainPlayable();
+    bool getComputerTrainPlayable();
+    bool getMexicanTrainPlayable();
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 
     Hand m_boneyard;
     Hand m_computerHand;
     std::deque<int> engineQueue;
-    Human humanPlayer;
     int engineInt;
+    Human humanPlayer;
     Computer computerPlayer;
+    Train mexicanTrain;
+    //these 3 booleans will dictate whether a player can place a tile on a train.
+    bool humanTrainPlayable;
+    bool computerTrainPlayable;
+    bool mexicanTrainPlayable;
 };
