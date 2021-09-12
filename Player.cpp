@@ -1,8 +1,5 @@
 #include "Player.h"
 
-void Player::addTileToTrain(Tile tileToAdd)
-{
-}
 
 void Player::printTrain()
 {
@@ -22,3 +19,14 @@ bool Player::getTrainMarker()
 {
     return playerTrain.getMarker();
 }
+
+bool Player::getOrphanDouble()
+{
+    return this->playerTrain.getOrphanDouble();
+}
+
+bool Player::isTrainEmpty()
+{
+    return this->playerTrain.isEmpty();
+}
+

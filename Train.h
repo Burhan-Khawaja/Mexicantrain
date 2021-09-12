@@ -18,6 +18,7 @@ public:
     void setOrphanDouble();
     void resetOrphanDouble();
     bool getOrphanDouble();
+    bool isEmpty();
 protected:
 private:
     bool marker;

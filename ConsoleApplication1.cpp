@@ -75,7 +75,6 @@ void trainTesting() {
         testTrain.addTileFront(Tile(i, i));
     }
     testTrain.printTrain();
-
     //orphan double function testing
     testTrain.setOrphanDouble();//sets orphan double to true
     if (testTrain.getOrphanDouble() == false) {

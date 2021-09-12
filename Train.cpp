@@ -65,3 +65,8 @@ bool Train::getOrphanDouble()
 {
     return this->orphanDouble;
 }
+
+bool Train::isEmpty()
+{
+    return this->trainDeque.empty();
+}
