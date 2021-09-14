@@ -5,6 +5,7 @@
 
 class Train {
 public:
+    Train();
     void addTileFront(Tile tileToAdd);
     void addTileBack(Tile tileToAdd);
     Tile getLastTile();
@@ -19,9 +20,14 @@ public:
     void resetOrphanDouble();
     bool getOrphanDouble();
     bool isEmpty();
+    void setTrainEndNumber(int engineInt, int newEndNumber);
+    int getTrainEndNumber();
 protected:
 private:
     bool marker;
     std::deque<Tile> trainDeque;
     bool orphanDouble;
+    //BURBUR testvariable to hold the end number of the train
+    int trainEndNumber;
+
 };

@@ -13,9 +13,7 @@ public:
     void addTileToTrain(Tile tileToAdd) {
         playerTrain.addTileBack(tileToAdd);
     }
-    bool tileFitsOnTrain(Tile tileToCheck, int engineInt) {
-        return false;
-    }
+
 
 protected:
 private:

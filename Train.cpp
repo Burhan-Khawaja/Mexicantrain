@@ -1,6 +1,12 @@
 #include <iostream>
 #include "Train.h"
 
+Train::Train()
+{
+    trainEndNumber = -1;
+    orphanDouble = false;
+}
+
 void Train::addTileFront(Tile tileToAdd) {
     trainDeque.push_front(tileToAdd);
 }
@@ -11,14 +17,23 @@ void Train::addTileBack(Tile tileToAdd) {
 }
 
 Tile Train::getLastTile() {
+    if (trainDeque.empty()) {
+        //if the train  deque is empty return a tile of value -1 -1.
+        return Tile(-1, -1);
+    }
     return trainDeque.back();
 }
 
 Tile Train::getFirstTile()
 {
+    if (trainDeque.empty()) {
+        //if the train  deque is empty return a tile of value -1 -1.
+        return Tile(-1, -1);
+    }
     return trainDeque.front();
 }
 
+//UNIMPLEMENTED FUNCTION what is this for?>
 void Train::getLastNumber() {
 
 }
@@ -69,4 +84,17 @@ bool Train::getOrphanDouble()
 bool Train::isEmpty()
 {
     return this->trainDeque.empty();
+}
+
+void Train::setTrainEndNumber(int engineInt, int newEndNumber)
+{
+    if (trainDeque.empty()) {
+        this->trainEndNumber = engineInt;
+    }
+    this->trainEndNumber = newEndNumber;
+}
+
+int Train::getTrainEndNumber()
+{
+    return this->trainEndNumber;
 }

@@ -87,14 +87,22 @@ int Round::getNextEngineValue() {
 void Round::startTurn()
 {
     do {
+        humanPlayer.addTileToHand(Tile(9, 9));
         //HUMAN TRAIN TURN
+        humanTurn = true;
         std::string userInput;
         char userTrain;
         std::cout << "Player One's turn to play: \nPlayer One's Hand: \n";
         humanPlayer.printHand();
         std::cout << "\nChoose a tile in x-y format to play (ie - 0-0)";
         std::cin >> userInput;
+        if (!verifyTileChoice(userInput)) {
+            continue;
+        }
 
+        std::cout << "\n Trains: \n";
+        printTrainAndEngine();
+        std::cout << "\n\n";
 
         std::cout << "Choose a train to play the tile on (h/H for human, c/C for computer, or m/M for mexican train): ";
         std::cin >> userTrain;
@@ -104,27 +112,40 @@ void Round::startTurn()
         //computerPlayer.setOrphanDouble();//human train should be unplayable.
         //computerPlayer.setOrphanDouble();
         //computerPlayer.resetOrphanDouble();
+        
         //end of testing code
 
 
         checkOrphanDoubles();
-
+        
         if (checkOrphanDoubles() == false) {
             computerTrainPlayable = computerPlayer.getTrainMarker();
             humanTrainPlayable = true;
         }
+
         if (userTrain == 'h' && getHumanTrainPlayable()) {
-            if (humanPlayer.tileFitsOnTrain(Tile((int)userInput[0] - 48, (int)userInput[2] - 48), engineInt) == false) {
-                std::cout << "Error: the tile you entered: " << userInput << " is not a valid tile.\n";
+            if (humanPlayer.tileFitsOnTrain(Tile((int)userInput[0] - 48, (int)userInput[2] - 48), engineInt, humanPlayer.getFirstTrainTile() ) == false) {
+                std::cout << "Error: the tile you entered: " << userInput << " is not a valid tile since it does not fit on the human train.\n";
                 continue;
             }
             humanPlayer.addTileToTrain(Tile((int)userInput[0] - 48, (int)userInput[2] - 48));
         }
-        else if (userTrain == 'c' && getComputerTrainPlayable()) {
+        else if (userTrain == 'c' ){ // BURBUR commented out to test code&& getComputerTrainPlayable()) {
+            if (computerPlayer.tileFitsOnTrain(Tile((int)userInput[0] - 48, (int)userInput[2] - 48), engineInt, computerPlayer.getLastTrainTile()) == false) {
+                std::cout << "Error: the tile you entered: " << userInput << " is not a valid tile.\n";
+                continue;
+            }
             computerPlayer.addTileToTrain(Tile((int)userInput[0] - 48, (int)userInput[2] - 48));
         }
         else if (userTrain == 'm' && getMexicanTrainPlayable()) {
             std::cout << "Mexican train not implemented yet jeez. will ad later";
+            if (mexicanTrain.isEmpty()) {
+                
+            }
+        }
+        else {
+            std::cout << "Error: invalid train selected.";
+            continue;
         }
         humanPlayer.removeTileFromHand((int)userInput[0] - 48, (int)userInput[2] - 48);
         //BURBUR need to add error checking for userInput
@@ -133,15 +154,13 @@ void Round::startTurn()
         //remove tile from players hand
         //BURBUR have to make sure player has tile, and that tile matches to previous train entry.
         //BURBUR ERROR: ADDTILE FUNCTION ADDS TO HAND, AND WE NEED TO MAKE A FUNCTION TO ADD TO TRAIN.
+        
+        //double check. If the player doesnt play a double, then their turn is over.
+        if (userInput[0] != userInput[2]) {
+            humanTurn = false;
+        }
 
-        std::cout << "\n Trains: \n";
-        printTrainAndEngine();
-
-
-        std::cout << "\nYour Hand:\n";
-        humanPlayer.printHand();
-
-    } while (true);
+    } while (this->humanTurn == true);
     //computer turncomputer turncomputer turncomputer turncomputer turncomputer turncomputer turncomputer turncomputer turncomputer turncomputer turn
     std::string TEMPcomputerInput;
     std::cout << "\n\nComputers turn to play a tile: \n";
@@ -241,6 +260,28 @@ bool Round::getMexicanTrainPlayable()
     return this->mexicanTrainPlayable;
 }
 
+bool Round::verifyTileChoice(std::string userInput)
+{
+    //have to check if string is greater then 3 because of null character ('\0')
+    if (userInput.length() > 3) {
+        std::cout << "\nError: The tile you entered " << userInput << " is too long to be a valid tile\n";
+        return false;
+    }
+    else if (userInput.size() <= 2) {
+        std::cout << "\nError: The tile you entered " << userInput << " is too short to be a valid tile\n";
+        return false;
+    }
+    else if (!isdigit(userInput[0]) || !isdigit(userInput[2])) {
+        std::cout << "\nError: The tile " << userInput << " Does not have a valid format, one of the characters is not a number\n";
+        return false;
+    }
+    else if (userInput[1] != '-') {
+        std::cout << "\nError: The tile you entered " << userInput << " must be seperated by a '-'\n";
+        return false;
+    }
+    return true;
+}
+
 
 
 
@@ -256,6 +297,21 @@ bool Round::getMexicanTrainPlayable()
 //check if there is a marker on opponents train. if tehre is that becomes avalid train.
 //
 
-//optino 1- member variable booleans for round class
-//option 2- normal boolean variables in function that get passed to function. would have to pass by reference.
-//
+
+/*NEED TO DO:
+Make sure we have afunction to check if player has a valid turn. Easiest way would be to check if there exists a tile that matches
+the hanging tile value.
+if they dont have a turn, make them draw from the boneyard and check if they can play that tile on the ligible trains.
+
+-the while(human turn = true) loop thing I have isnt how th epogram should be. when the  player plays a double they should only be allowed to play 1 til
+    unless they have another double
+
+
+bool playerHasMove();
+check what trains are eligible. 
+if statement that will check what trains are playable, and if they  are playable, then 
+call playerHasMove() with the trainTile and engine unit incase train is empty. need to access the players hand. 
+might have to move the playerHasMove class to player class. 
+playerHasmove(int engineUnit, computer/human/mexicanTrain.hangingNumber(),
+does any tile in the players hand match the trains hanging number?
+*/
