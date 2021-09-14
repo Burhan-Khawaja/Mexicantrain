@@ -15,6 +15,7 @@ void Human::addTileToTrain(Tile tileToAdd) {
 }
 
 //BURBUR CHANGE FUNCTION SO THAT IT TAKE AN ARGUMENT OF THE TILE ON THE TRAIN TO CHECK AGAINST, THAT WS THIS FUNCTION IS AGNOSTIC TOWARDS WHAT THE TRAIN IS.
+/*
 bool Human::tileFitsOnTrain(Tile tileToCheck, int engine) {
     if (playerTrain.isEmpty()) {
         std::cout << "Playe train is empty, functions are working properly.";
@@ -33,3 +34,4 @@ bool Human::tileFitsOnTrain(Tile tileToCheck, int engine) {
     }
     return true;
 }
+*/

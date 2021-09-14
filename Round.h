@@ -44,6 +44,10 @@ public:
     bool getHumanTrainPlayable();
     bool getComputerTrainPlayable();
     bool getMexicanTrainPlayable();
+    //verify that user enered a valid tile format.
+    bool verifyTileChoice(std::string userInput);
+    bool isDouble(Tile tileToCheck);
+    bool playerHasMove();
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 
@@ -58,4 +62,17 @@ private:
     bool humanTrainPlayable;
     bool computerTrainPlayable;
     bool mexicanTrainPlayable;
+    bool humanTurn;
+    bool computerTurn;
 };
+
+
+
+
+
+
+/*
+things i need to add, a short list:
+verify user has tile, verfy user entered valid tile.
+
+*/
