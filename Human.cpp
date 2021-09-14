@@ -13,6 +13,11 @@ void Human::addTileToHand(Tile tileToAdd)
 void Human::addTileToTrain(Tile tileToAdd) {
     playerTrain.addTileFront(tileToAdd);
 }
+//BURBUR might have to deletee this
+void Human::playedDoubleTile(std::string userInput)
+{
+
+}
 
 //BURBUR CHANGE FUNCTION SO THAT IT TAKE AN ARGUMENT OF THE TILE ON THE TRAIN TO CHECK AGAINST, THAT WS THIS FUNCTION IS AGNOSTIC TOWARDS WHAT THE TRAIN IS.
 /*

@@ -8,7 +8,7 @@ public:
     void addTileToHand(Tile tileToAdd);
     void addTileToTrain(Tile tileToAdd);
     //bool tileFitsOnTrain(Tile tileToCheck, int engineInt);
-
+    void playedDoubleTile(std::string userInput);
 protected:
 private:
 

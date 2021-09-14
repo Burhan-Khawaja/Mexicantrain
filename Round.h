@@ -12,6 +12,8 @@
 
 class Round {
 public:
+    //might not needd this idk what im doing
+    Round();
     //why would we need this? can print hand in hand class. void printHand(Hand handToPrint);
     void instantiateDeck();
     void shuffleDeck();
@@ -47,7 +49,14 @@ public:
     //verify that user enered a valid tile format.
     bool verifyTileChoice(std::string userInput);
     bool isDouble(Tile tileToCheck);
+    //moved to player class for time being.
     bool playerHasMove();
+    //BURBUR probably dont need these, delete after we refacotr idk what im doing
+    int getComputerTrainEndNumber();
+    int getHumanTrainEndNumber();
+    int getMexicanTrainEndNumber();
+    //this function will deal with the set of rules and things to do when a user plays a tile that is a double.
+    void playedDoubleTile(std::string userInput);
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 

@@ -8,6 +8,7 @@ public:
     //BURBUR why is this virutal? doesnt need to be
     virtual void addTileToHand(Tile tileToAdd) = 0;
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
+    virtual void play() = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;
     bool tileFitsOnTrain(Tile tileToCheck, int engineInt, Tile trainTile);
 
@@ -23,6 +24,9 @@ public:
     Tile getFirstTrainTile();
     Tile getLastTrainTile();
     void setTrainEndNumber(int engineInt, int newEndNumber);
+    int getTrainEndNumber();
+    bool playerHasMove(int trainEndNumber);
+    void playedDoubleTile(std::string userInput);
 protected:    
     Train playerTrain;
     Hand playerHand;

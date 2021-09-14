@@ -3,22 +3,6 @@
 
 bool Player::tileFitsOnTrain(Tile tileToCheck, int engineInt, Tile trainTile)
 {
-    /*
-    if (trainTile.getFirstNumber() == -1 && trainTile.getSecondNumber() == -1) {
-        if (tileToCheck.getFirstNumber() != engineInt && tileToCheck.getSecondNumber() != engineInt) {
-            return false;
-        }
-        return true;
-    }
-    //trainTileFirstNum and trainTileSecondNum will hold the values of the dominoes last placed on the train
-    //this will make it easier to understand the if statement.
-    int trainTileFirstNum = trainTile.getFirstNumber();
-    int trainTileSecondNum = trainTile.getSecondNumber();
-    //what is this line of code? doesnt look like its usedTile trainTile = playerTrain.getFirstTile();
-    if (tileToCheck.getFirstNumber() != trainTileFirstNum && tileToCheck.getFirstNumber() != trainTileSecondNum && tileToCheck.getSecondNumber() != trainTileFirstNum && tileToCheck.getSecondNumber() != trainTileSecondNum) {
-        return false;
-    }
-    return true;*/
     //BURBUR refactor this code what is this garbage? please god dont hand this into Professor Kumar. PRofessor if you see this im sorry.
     if (playerTrain.getTrainEndNumber() == -1) {
         if (tileToCheck.getFirstNumber() != engineInt && tileToCheck.getSecondNumber() != engineInt) {
@@ -94,4 +78,27 @@ void Player::setTrainEndNumber(int engineInt, int newEndNumber)
 {
     playerTrain.setTrainEndNumber(engineInt, newEndNumber);
 }
+
+int Player::getTrainEndNumber()
+{
+    return this->playerTrain.getTrainEndNumber();
+    //return this->trainLastNumber;
+}
+
+bool Player::playerHasMove(int trainEndNumber)
+{
+    std::cout << "\n\n\n\n\n\n\n\nn\n\n\n\n" << trainEndNumber;
+    for (int i = 0; i < playerHand.getSize(); i++) {
+        if (playerHand[i].getFirstNumber() == trainEndNumber) {
+            return true;
+        }
+        else if (playerHand[i].getSecondNumber() == trainEndNumber) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
 
