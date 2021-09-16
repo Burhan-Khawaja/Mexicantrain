@@ -1,14 +1,16 @@
 #pragma once
 #include "Train.h"
 #include "Hand.h"
-#include <iostream>
 
+#include <iostream>
+#include <string>
 class Player {
 public:
     //BURBUR why is this virutal? doesnt need to be
     virtual void addTileToHand(Tile tileToAdd) = 0;
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
-    virtual void play() = 0;
+    virtual Tile play(bool humanTrainPlayable, bool computerTrainPlayable, bool mexicanTrainPlayable) = 0;
+    virtual void play2Test(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain) = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;
     bool tileFitsOnTrain(Tile tileToCheck, int engineInt, Tile trainTile);
 
@@ -26,13 +28,21 @@ public:
     void setTrainEndNumber(int engineInt, int newEndNumber);
     int getTrainEndNumber();
     bool playerHasMove(int trainEndNumber);
+    //BURBUR this function is also in round
+    bool verifyTileChoice(std::string userInput);
+
     void playedDoubleTile(std::string userInput);
 protected:    
     Train playerTrain;
     Hand playerHand;
     //BURBUR this is a test variable as of right now
     //this variable will store the integer of the tile that the next tile placed has to match.
-    int trainLastNumber;
+    int trainLastNumber;    
+    //these 3 booleans dictate weather the player can play on each train.
+    bool humanTrainPlayable;
+    bool computerTrainPlayable;
+    bool mexicanTrainPlayable;
 private:
+
 
 };

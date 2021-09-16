@@ -87,7 +87,6 @@ int Player::getTrainEndNumber()
 
 bool Player::playerHasMove(int trainEndNumber)
 {
-    std::cout << "\n\n\n\n\n\n\n\nn\n\n\n\n" << trainEndNumber;
     for (int i = 0; i < playerHand.getSize(); i++) {
         if (playerHand[i].getFirstNumber() == trainEndNumber) {
             return true;
@@ -100,5 +99,27 @@ bool Player::playerHasMove(int trainEndNumber)
 }
 
 
+
+bool Player::verifyTileChoice(std::string userInput)
+{
+    //have to check if string is greater then 3 because of null character ('\0')
+    if (userInput.length() > 3) {
+        std::cout << "\nError: The tile you entered " << userInput << " is too long to be a valid tile\n";
+        return false;
+    }
+    else if (userInput.size() <= 2) {
+        std::cout << "\nError: The tile you entered " << userInput << " is too short to be a valid tile\n";
+        return false;
+    }
+    else if (!isdigit(userInput[0]) || !isdigit(userInput[2])) {
+        std::cout << "\nError: The tile " << userInput << " Does not have a valid format, one of the characters is not a number\n";
+        return false;
+    }
+    else if (userInput[1] != '-') {
+        std::cout << "\nError: The tile you entered " << userInput << " must be seperated by a '-'\n";
+        return false;
+    }
+    return true;
+}
 
 

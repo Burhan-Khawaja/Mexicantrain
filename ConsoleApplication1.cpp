@@ -102,10 +102,18 @@ int main()
     std::cout << "Welcome to Mexican Train!\n";
     //tileTesting(); 
     //handTesting();
-    roundTesting();
+    //roundTesting();
     //gameTesting();
     //trainTesting(); 
     //playerTesting();
+
+    Player* humanTest = new Human;
+    Player* computerPlayer = new Computer;
+    Train mexicanTrain;
+    
+    humanTest->play2Test(humanTest, computerPlayer, mexicanTrain);
+
+
 }
 
 

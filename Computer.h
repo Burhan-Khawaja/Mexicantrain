@@ -1,6 +1,6 @@
 #pragma once
 #include "Player.h"
-#include <iostream>
+
 class Computer : public Player {
 public:    
     Computer() {
@@ -13,8 +13,12 @@ public:
     void addTileToTrain(Tile tileToAdd) {
         playerTrain.addTileBack(tileToAdd);
     }
+    Tile play(bool humanTrainPlayable, bool computerTrainPlayable, bool mexicanTrainPlayable) {
+        return Tile(-1, -1);
+    }
+    virtual void play2Test(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain) {
 
-
+    }
 protected:
 private:
 

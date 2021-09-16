@@ -56,7 +56,8 @@ public:
     int getHumanTrainEndNumber();
     int getMexicanTrainEndNumber();
     //this function will deal with the set of rules and things to do when a user plays a tile that is a double.
-    void playedDoubleTile(std::string userInput);
+    void playedDoubleTile(char userInput);
+    bool validateTrainChoice(char userTrain,Tile userTile);
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 
