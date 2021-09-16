@@ -85,12 +85,13 @@ bool Train::isEmpty()
 {
     return this->trainDeque.empty();
 }
-
-void Train::setTrainEndNumber(int engineInt, int newEndNumber)
+//BURBUR need to test this code, removed engine int part.
+void Train::setTrainEndNumber(int newEndNumber)
 {
+    /*
     if (trainDeque.empty()) {
         this->trainEndNumber = engineInt;
-    }
+    }*/
     this->trainEndNumber = newEndNumber;
 }
 

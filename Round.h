@@ -56,7 +56,9 @@ public:
     int getHumanTrainEndNumber();
     int getMexicanTrainEndNumber();
     //this function will deal with the set of rules and things to do when a user plays a tile that is a double.
-    void playedDoubleTile(std::string userInput);
+    void playedDoubleTile(char userInput);
+    bool validateTrainChoice(char userTrain,Tile userTile);
+
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 
@@ -64,10 +66,11 @@ private:
     Hand m_computerHand;
     std::deque<int> engineQueue;
     int engineInt;
-    Human humanPlayer;
-    Computer computerPlayer;
+    Human* humanPlayer;
+    Computer* computerPlayer;
     Train mexicanTrain;
     //these 3 booleans will dictate whether a player can place a tile on a train.
+    //BURBUR THESE WERE MOVED INTO THE PLAYER CLASS THEY SHOULD BE REMOVED AT A LATER DATE.
     bool humanTrainPlayable;
     bool computerTrainPlayable;
     bool mexicanTrainPlayable;

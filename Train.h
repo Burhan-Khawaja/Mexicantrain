@@ -20,7 +20,7 @@ public:
     void resetOrphanDouble();
     bool getOrphanDouble();
     bool isEmpty();
-    void setTrainEndNumber(int engineInt, int newEndNumber);
+    void setTrainEndNumber(int newEndNumber);
     int getTrainEndNumber();
 protected:
 private:

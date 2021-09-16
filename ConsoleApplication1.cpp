@@ -106,6 +106,16 @@ int main()
     //gameTesting();
     //trainTesting(); 
     //playerTesting();
+
+//    Player* humanTest = new Human;
+ //   Player* computerPlayer = new Computer;
+ //   Train mexicanTrain;
+    
+//    humanTest->play2Test(humanTest, computerPlayer, mexicanTrain);
+
+
 }
 
 
+
+//FOR TRAIN CLASS - need to add print computer train/print human train.

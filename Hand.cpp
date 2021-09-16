@@ -34,7 +34,7 @@ int Hand::getSize() {
 Tile Hand::getTile(int index) {
     return m_hand[index];
 }
-
+//BURBUR NEED ERROR CHECKING
 Tile& Hand::operator[](int index) {
    // if (index > m_hand.size()) {}
     return m_hand.at(index);
