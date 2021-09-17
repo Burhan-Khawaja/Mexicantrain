@@ -56,6 +56,7 @@ bool Player::getOrphanDouble()
     return this->playerTrain.getOrphanDouble();
 }
 
+
 bool Player::isTrainEmpty()
 {
     return this->playerTrain.isEmpty();
@@ -143,7 +144,7 @@ bool Player::validateTrainChoice(char userTrain)
 
     }
     else if (userTrain == 'm' && !getMexicanTrainPlayable()) {
-        std::cout << "Mexican train not implemented yet jeez. will ad later";
+        std::cout << "Error: You are not allowed to play on the Mexican Train";
         return false;
     }
 
@@ -193,3 +194,15 @@ int Player::getHandSize()
 {
     return this->playerHand.getSize();
 }
+
+bool Player::hasTile(Tile userInputAsTile)
+{
+    for (int i = 0; i < playerHand.getSize(); i++) {
+        if (playerHand[i].getFirstNumber() == userInputAsTile.getFirstNumber() && playerHand[i].getSecondNumber() == userInputAsTile.getSecondNumber()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
