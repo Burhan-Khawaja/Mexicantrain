@@ -28,7 +28,7 @@ public:
             humanPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         else if (userTrain == 'c') {
-            humanPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
+			computerPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         else {//userTrain == m
             mexicanTrain.addTileBack(Tile(userInput[0] - 48, userInput[2] - 48));
