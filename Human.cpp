@@ -44,9 +44,9 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain,
         }
 
         //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
-        for (int i = 0; i < humanPlayer->getHandSize(); i++) {
-            humanPlayer->removeTileFromHand(humanPlayer->getFirstHandTile().getFirstNumber(), humanPlayer->getFirstHandTile().getSecondNumber());
-        }
+        //for (int i = 0; i < humanPlayer->getHandSize(); i++) {
+        //    humanPlayer->removeTileFromHand(humanPlayer->getFirstHandTile().getFirstNumber(), humanPlayer->getFirstHandTile().getSecondNumber());
+        //}
         humanPlayer->addTileToHand(Tile(1, 2));
         if (validMove == false) {
             std::cout << "Error: The player does not have a valid move to play. They will draw from the boneyard";
@@ -92,6 +92,8 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain,
         std::cout << "Choose a train to play the tile on (h/H for human, c/C for computer, or m/M for mexican train): ";
         std::cin >> userTrain;
         userTrain = tolower(userTrain);
+		//this function makes sure the user enters a valid coice for a train
+		//AND that the train is palyable
         if (!validateTrainChoice(userTrain)) {
             continue;
         }
