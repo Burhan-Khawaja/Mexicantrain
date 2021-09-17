@@ -9,8 +9,8 @@ public:
     void addTileToHand(Tile tileToAdd);
     void addTileToTrain(Tile tileToAdd);
     //bool tileFitsOnTrain(Tile tileToCheck, int engineInt);
-    void playedDoubleTile(std::string userInput);
-    int play(Player * humanPlayer, Player * computerPlayer, Train mexicanTrain, Hand boneyard);
+    void playedDoubleTile(char userInput, Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard);
+    int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard);
 protected:
 private:
 

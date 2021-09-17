@@ -9,7 +9,7 @@ public:
     //BURBUR why is this virutal? doesnt need to be
     virtual void addTileToHand(Tile tileToAdd) = 0;
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
-    virtual int play(Player * humanPlayer, Player * computerPlayer, Train mexicanTrain, Hand boneyard) = 0;
+    virtual int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;
     bool tileFitsOnTrain(Tile tileToCheck, Tile trainTile);
 
@@ -37,7 +37,8 @@ public:
     bool getMexicanTrainPlayable();
     bool checkOrphanDoubles(Player* oppositeTrain, Train mexicanTrain);
     int getHandSize();
-
+    //check that player has the tile they selected
+    bool hasTile(Tile userInputAsTile);
 protected:    
     Train playerTrain;
     Hand playerHand;

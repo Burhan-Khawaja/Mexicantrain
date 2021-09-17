@@ -8,6 +8,7 @@ Round::Round()
     this->computerPlayer = new Computer;
     computerPlayer->setTrainEndNumber(this->engineInt );
     humanPlayer->setTrainEndNumber(this->engineInt);
+    mexicanTrain.setTrainEndNumber(this->engineInt);
 
 }
 
@@ -100,16 +101,16 @@ int Round::getNextEngineValue() {
 void Round::startTurn()
 {
     do {
-        ;
         std::cout << "\n\n\n\Current Trains:\n";
         printTrainAndEngine();
         humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
-        std::cout << "\n\n Computer Turn!";
-        std::cout << "\n\n\n\Current Trains:\n";
-        printTrainAndEngine();
+        std::cout << "\n\n\t\t\t\tComputer Turn!";
+        std::cout << "\n\nCurrent Trains:\n";
+        printTrainAndEngine();        
+        std::cout << "\n\n\n\n";
         computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
         /*
-        std::cout << "\nCurrent Trains: \n";
+        std::cout << "\nCurrent Trains: \no
         printTrainAndEngine();
         std::cout << "\n\n\n";
         if (checkOrphanDoubles() == false) {
@@ -204,6 +205,8 @@ void Round::printTrainAndEngine()
     computerPlayer->printTrain();
     std::cout << engineInt << " - " << engineInt << " ";
     humanPlayer->printTrain();
+    std::cout << "\nMexican Train: ";
+    mexicanTrain.printTrain();
 }
 
 
