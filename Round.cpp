@@ -100,13 +100,13 @@ int Round::getNextEngineValue() {
 void Round::startTurn()
 {
     do {
-        ;
         std::cout << "\n\n\n\Current Trains:\n";
         printTrainAndEngine();
         humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
         std::cout << "\n\n Computer Turn!";
         std::cout << "\n\n\n\Current Trains:\n";
         printTrainAndEngine();
+		std::cout << "\n\n\n";
         computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
         /*
         std::cout << "\nCurrent Trains: \n";
