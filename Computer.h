@@ -11,7 +11,14 @@ public:
         playerHand.addTile(tileToAdd);
     }
     void addTileToTrain(Tile tileToAdd) {
-        playerTrain.addTileBack(tileToAdd);
+        if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
+            playerTrain.setTrainEndNumber(tileToAdd.getSecondNumber());
+            tileToAdd.swapNumbers();
+        }
+        else if (tileToAdd.getSecondNumber() == playerTrain.getTrainEndNumber()) {
+            playerTrain.setTrainEndNumber(tileToAdd.getFirstNumber());
+        }
+        playerTrain.addTileFront(tileToAdd);
     }
     int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) {
         std::string userInput;
@@ -31,6 +38,7 @@ public:
             computerPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         else {//userTrain == m
+
             mexicanTrain.addTileBack(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         return -1;

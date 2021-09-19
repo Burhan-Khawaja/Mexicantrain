@@ -8,10 +8,12 @@ Train::Train()
 }
 
 void Train::addTileFront(Tile tileToAdd) {
+
     trainDeque.push_front(tileToAdd);
 }
 
 void Train::addTileBack(Tile tileToAdd) {
+
     trainDeque.push_back(tileToAdd);
 
 }

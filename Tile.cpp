@@ -46,4 +46,11 @@ void Tile::setValues(int val1, int val2)
     this->T_secondNumber = val2;
 }
 
+void Tile::swapNumbers()
+{
+    int tmp = this->getFirstNumber();
+    this->T_firstNumber = this->getSecondNumber();
+    this->T_secondNumber = tmp;
+}
+
 

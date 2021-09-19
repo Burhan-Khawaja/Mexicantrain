@@ -10,6 +10,7 @@ public:
     void printTile();    
     bool operator==(const Tile& lhs);
     void setValues(int val1, int val2);
+    void swapNumbers();
 protected:
 
 private:

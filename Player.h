@@ -11,7 +11,7 @@ public:
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
     virtual int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;
-    bool tileFitsOnTrain(Tile tileToCheck, Tile trainTile);
+    bool tileFitsOnTrain(Tile tileToCheck, int trainEndNumber);
 
     void printTrain();
     void printHand();

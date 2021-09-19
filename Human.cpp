@@ -12,29 +12,25 @@ void Human::addTileToHand(Tile tileToAdd)
 }
 
 void Human::addTileToTrain(Tile tileToAdd) {
-    playerTrain.addTileFront(tileToAdd);
+    if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
+        playerTrain.setTrainEndNumber(tileToAdd.getSecondNumber());
+    }
+    else if (tileToAdd.getSecondNumber() == playerTrain.getTrainEndNumber()) {
+        playerTrain.setTrainEndNumber(tileToAdd.getFirstNumber()); 
+        tileToAdd.swapNumbers();
+    }
+    
+    playerTrain.addTileBack(tileToAdd);
 }
 
 //BURBUR might have to deletee this
 void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard)
 {
-
-
     bool validMoveSelected = false;
     do {
         //check for valid move
         bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
-        /*
-        if (this->humanTrainPlayable && playerHasMove(humanPlayer->getTrainEndNumber())) {
-            validMove = true;
-        }
-        if (this->computerTrainPlayable && playerHasMove(computerPlayer->getTrainEndNumber())) {
-            validMove = true;
-        }
-        if (this->mexicanTrainPlayable && playerHasMove(mexicanTrain.getTrainEndNumber())) {
-            validMove = true;
-        }
-        */
+
         if (validMove == false) {
             std::cout << "Error, you have no valid move.";
             //function to deal with no valid move should be here.
@@ -71,7 +67,6 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
             //TEMPORARILY? remove the tile from the users hand. this way we can see if they have a valid move/a single double left.
             humanPlayer->removeTileFromHand(userInputAsTile.getFirstNumber(), userInputAsTile.getSecondNumber());
             //player exhausted hand after playing 2 doubles, ending the game.  
-
 
             if (humanPlayer->getHandSize() == 0) {
                 //player hand empty after 2 doubles played. game over.
@@ -111,15 +106,15 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
         }
 
         bool validTileSelected = false;
-        if (userTrain == 'h' && tileFitsOnTrain(userInputAsTile, this->getLastTrainTile())) {
+        if (userTrain == 'h' && tileFitsOnTrain(userInputAsTile, this->getTrainEndNumber())) {
             humanPlayer->addTileToTrain(userInputAsTile);
             validTileSelected = true;
         }
-        else if (userTrain == 'c' && tileFitsOnTrain(userInputAsTile, computerPlayer->getLastTrainTile())) {
+        else if (userTrain == 'c' && tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
             computerPlayer->addTileToTrain(userInputAsTile);
             validTileSelected = true;
         }
-        else if (userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getLastTile())) {
+        else if (userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
             //mexican train
             mexicanTrain.addTileBack(userInputAsTile);
             validTileSelected = true;
@@ -203,16 +198,23 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             continue;
         }
         bool validTileSelected = false;
-        if (userTrain == 'h' && this->tileFitsOnTrain(userInputAsTile, this->getLastTrainTile())) {
+        if (userTrain == 'h' && this->tileFitsOnTrain(userInputAsTile, this->getTrainEndNumber())) {
             humanPlayer->addTileToTrain(userInputAsTile);
             validTileSelected = true;
         }
-        else if (userTrain == 'c' && computerPlayer->tileFitsOnTrain(userInputAsTile, computerPlayer->getLastTrainTile())) {
+        else if (userTrain == 'c' && computerPlayer->tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
             computerPlayer->addTileToTrain(userInputAsTile);
             validTileSelected = true;
         }
-        else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getLastTile())) {
+        else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
             //mexican train
+            if (userInputAsTile.getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(userInputAsTile.getSecondNumber());
+            }
+            else if (userInputAsTile.getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(userInputAsTile.getFirstNumber());
+                userInputAsTile.swapNumbers();
+            }
             mexicanTrain.addTileBack(userInputAsTile); 
             validTileSelected = true;
         }

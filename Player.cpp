@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-bool Player::tileFitsOnTrain(Tile tileToCheck, Tile trainTile)
+bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
 {
     //BURBUR refactor this code what is this garbage? please god dont hand this into Professor Kumar. PRofessor if you see this im sorry.
     //BURBUR REMOVED engineint part since we set the train ends number in constructor. 
@@ -20,14 +20,22 @@ bool Player::tileFitsOnTrain(Tile tileToCheck, Tile trainTile)
         return true;
     }
     */
+    /*
     if (tileToCheck.getFirstNumber() == playerTrain.getTrainEndNumber()) {
         //playerTrain.setTrainEndNumber(tileToCheck.getSecondNumber());
         return true;
     }
     else if (tileToCheck.getSecondNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToCheck.getFirstNumber());
-        return true;
+        //playerTrain.setTrainEndNumber(tileToCheck.getFirstNumber());
+       return true;
+    } */    
+    
+    if (tileToCheck.getFirstNumber() == trainEndNumber) {
+       return true;
     }
+    else if (tileToCheck.getSecondNumber() == trainEndNumber) {
+       return true;
+    } 
     std::cout << "Error: The tile you selected does not fit on the train\n";
     return false;
 }
