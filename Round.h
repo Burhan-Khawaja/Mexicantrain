@@ -18,7 +18,7 @@ public:
     void instantiateDeck();
     void shuffleDeck();
     void dealTiles();
-    void startRound();
+    int startRound();
     void whoGoesFirst();
     //remove engine tile from deck
     void removeEngineTile();
@@ -27,7 +27,7 @@ public:
 //THESE 2 FUNCTIONS ARE INGAME CLASS, MIGHT HAVE TO FIGURE O UT WHERE THEY ARE BETTER SUITED.
     void resetEngineQueue();
     int getNextEngineValue();
-    void startTurn();
+    int startTurn();
     void printTrainAndEngine();
     void printHands();
     void playerHasTile(Tile tileToCheck);
@@ -51,19 +51,18 @@ public:
     bool isDouble(Tile tileToCheck);
     //moved to player class for time being.
     bool playerHasMove();
-    //BURBUR probably dont need these, delete after we refacotr idk what im doing
-    int getComputerTrainEndNumber();
-    int getHumanTrainEndNumber();
-    int getMexicanTrainEndNumber();
+
     //this function will deal with the set of rules and things to do when a user plays a tile that is a double.
     void playedDoubleTile(char userInput);
     bool validateTrainChoice(char userTrain,Tile userTile);
+    int endRound();
+    bool getWinner();
+    void cleanData();
 
 protected:
 private:
     //m_boneyard will contain all the cards, and shuffle t hem and disperse them to computer and player, and the remaining cards will be kept in the boneyard. 
     Hand m_boneyard;
-    Hand m_computerHand;
     std::deque<int> engineQueue;
     int engineInt;
     Human* humanPlayer;
@@ -76,15 +75,6 @@ private:
     bool mexicanTrainPlayable;
     bool humanTurn;
     bool computerTurn;
+    bool computerWon;
+    bool humanWon;
 };
-
-
-
-
-
-
-/*
-things i need to add, a short list:
-verify user has tile, verfy user entered valid tile.
-
-*/

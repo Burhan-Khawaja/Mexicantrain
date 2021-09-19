@@ -6,8 +6,9 @@ Round::Round()
 {
     this->humanPlayer = new Human;
     this->computerPlayer = new Computer;
-    computerPlayer->setTrainEndNumber(this->engineInt );
-    humanPlayer->setTrainEndNumber(this->engineInt);
+    //computerPlayer->setTrainEndNumber(this->engineInt );
+    //humanPlayer->setTrainEndNumber(this->engineInt);
+    //mexicanTrain.setTrainEndNumber(this->engineInt);
 
 }
 
@@ -52,7 +53,7 @@ void Round::dealTiles() {
 
 }
 
-void Round::startRound()
+int Round::startRound()
 {
     //instantiate deck by creating all tiles. remove the current engine tile, and shuffle the deck and deal the tiles to player and comptuer.
     instantiateDeck();
@@ -60,7 +61,10 @@ void Round::startRound()
     shuffleDeck();
     dealTiles();
     setEngineTile();
-    startTurn();
+    int pipsValue = startTurn();
+    //game is over, remove all lingering data incase u ser wants to play another round.
+    cleanData();
+    return pipsValue;
 }
 
 void Round::whoGoesFirst()
@@ -97,105 +101,30 @@ int Round::getNextEngineValue() {
     return tmpVal;
 }
 
-void Round::startTurn()
+int Round::startTurn()
 {
+    //
+    int humanPipsLeft;
+    int computerPipsLeft;
+
     do {
-        ;
         std::cout << "\n\n\n\Current Trains:\n";
         printTrainAndEngine();
-        humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
-        std::cout << "\n\n Computer Turn!";
-        std::cout << "\n\n\n\Current Trains:\n";
-        printTrainAndEngine();
-        computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
-        /*
-        std::cout << "\nCurrent Trains: \n";
-        printTrainAndEngine();
-        std::cout << "\n\n\n";
-        if (checkOrphanDoubles() == false) {
-            computerTrainPlayable = computerPlayer.getTrainMarker();
-            humanTrainPlayable = true;
+        computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
+        if (computerPipsLeft > 0) {
+            humanWon = true;
+            return computerPipsLeft;
         }
-        //should move this somehwere else. possibly in the constructor of the class to start the round class. along with other things
-        //like 
-        if (humanPlayer.isTrainEmpty()) {
-            humanPlayer.setTrainEndNumber(this->engineInt, this->engineInt);
-        }
-        if (computerPlayer.isTrainEmpty()) {
-            computerPlayer.setTrainEndNumber(this->engineInt, this->engineInt);
+        std::cout << "\n\n\t\t\t\tComputer Turn!";
+        std::cout << "\n\nCurrent Trains:\n";
+        printTrainAndEngine();        
+        std::cout << "\n\n\n\n";
+        humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
+        if (humanPipsLeft > 0) {
+            computerWon = true;
+            return humanPipsLeft;
         }
 
-        bool playerHasMove;
-
-        if (getHumanTrainPlayable() && humanPlayer.playerHasMove(humanPlayer.getTrainEndNumber())) {
-            playerHasMove = true;
-        }
-
-        if (getComputerTrainPlayable() && humanPlayer.playerHasMove(computerPlayer.getTrainEndNumber())) {
-            playerHasMove = true;
-        }
-
-        if (getMexicanTrainPlayable()) {
-
-        }
-
-        if (playerHasMove == false) {
-            std::cout << "Error: You have no valid move, Drawing a tile from the boneyard.";
-            Tile tmpTile = drawFromBoneyard();
-            if (tmpTile.getFirstNumber() == -1) {
-                std::cout << "Boneyard is empty, so skipping turn.";
-                //break;
-            }
-            std::cout << "The tile you drew from the boneyard is: ";
-            tmpTile.printTile();
-        }
-
-        Tile userTile = humanPlayer.play(this->humanTrainPlayable, this->computerTrainPlayable, this->mexicanTrainPlayable);
-
-        char userTrain;
-        std::cout << "Choose a train to play the tile on (h/H for human, c/C for computer, or m/M for mexican train): ";
-        std::cin >> userTrain;
-        userTrain = tolower(userTrain);
-        if (!validateTrainChoice(userTrain, userTile)) {
-            continue;
-        }
-/*        if (userTrain == 'h' && getHumanTrainPlayable()) {
-            if (humanPlayer.tileFitsOnTrain(userTile, engineInt, humanPlayer.getFirstTrainTile()) == false) {
-                std::cout << "Error: the tile you entered: ";
-                userTile.printTile();
-                std::cout << " is not a valid tile since it does not fit on the human train.\n";
-                continue;
-            }
-            humanPlayer.addTileToTrain(userTile);
-        }
-        else if (userTrain == 'c' && getComputerTrainPlayable()) {
-            if (computerPlayer.tileFitsOnTrain(userTile, engineInt, computerPlayer.getLastTrainTile()) == false) {
-                std::cout << "Error: the tile you entered: ";
-                userTile.printTile();
-                std::cout << " is not a valid tile.\n";
-                continue;
-            }
-            computerPlayer.addTileToTrain(userTile);
-        }
-        else if (userTrain == 'm' && getMexicanTrainPlayable()) {
-            std::cout << "Mexican train not implemented yet jeez. will ad later";
-            if (mexicanTrain.isEmpty()) {
-
-            }
-        }
-        else {
-            std::cout << "Error: The train you  selected is unplayable." << std::endl;
-            continue;
-        }
-        humanPlayer.removeTileFromHand(userTile.getFirstNumber(), userTile.getSecondNumber());
-        //BURBUR have to make sure player has tile, 
-
-        //double check. If the player doesnt play a double, then their turn is over.
-        if (userTile.getFirstNumber() == userTile.getSecondNumber()) {
-            //humanPlayer.playedDoubleTile(userInput);
-            playedDoubleTile(userTrain);
-        }
-        */
     } while (true);
 }
 
@@ -204,6 +133,8 @@ void Round::printTrainAndEngine()
     computerPlayer->printTrain();
     std::cout << engineInt << " - " << engineInt << " ";
     humanPlayer->printTrain();
+    std::cout << "\nMexican Train: ";
+    mexicanTrain.printTrain();
 }
 
 
@@ -228,33 +159,6 @@ bool Round::getComputerTrainMarker()
     return this->computerPlayer->getTrainMarker();
 }
 
-//if any train has orphan doulbe, return true. if it doesnt return false.
-//BURBUR MOVED TO PLAYER CLASS REMOVE LATER
-bool Round::checkOrphanDoubles()
-{
-    /*
-    if (humanPlayer->getOrphanDouble() == true) {
-        this->humanTrainPlayable = true;
-        this->computerTrainPlayable = false;
-        this->mexicanTrainPlayable = false;
-        return true;
-    }
-    else if (computerPlayer->getOrphanDouble() == true) {
-        this->humanTrainPlayable = false;
-        this->computerTrainPlayable = true;
-        this->mexicanTrainPlayable = false;
-        return true;
-    }
-    else if (mexicanTrain.getOrphanDouble() == true) {
-        this->humanTrainPlayable = false;
-        this->computerTrainPlayable = false;
-        this->mexicanTrainPlayable = true;
-        return true;
-    }
-    return false;
-    */
-    return false;
-}
 
 void Round::checkHumansPlayableTrains()
 {
@@ -314,15 +218,7 @@ bool Round::playerHasMove()
     return false;
 }
 
-int Round::getComputerTrainEndNumber()
-{
-    return computerPlayer->getTrainEndNumber();
-}
 
-int Round::getHumanTrainEndNumber()
-{
-    return humanPlayer->getTrainEndNumber();
-}
 
 void Round::playedDoubleTile(char userInput)
 {
@@ -407,6 +303,33 @@ bool Round::validateTrainChoice(char userTrain, Tile userTile)
     */
     return false;
 }
+
+int Round::endRound()
+{
+    
+    return 0;
+}
+
+//human won = true, computer won = false
+bool Round::getWinner()
+{
+    if (humanWon) {
+        return true;
+    }
+    return false;//computer won.
+}
+
+void Round::cleanData()
+{
+    //clear boneyard, player hand, computer hand.
+    //
+    this->computerPlayer->clearData();
+    this->humanPlayer->clearData();
+    this->m_boneyard.clearHand();
+    this->mexicanTrain.clearTrain();
+}
+
+
 
 
 

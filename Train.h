@@ -22,6 +22,7 @@ public:
     bool isEmpty();
     void setTrainEndNumber(int newEndNumber);
     int getTrainEndNumber();
+    void clearTrain();
 protected:
 private:
     bool marker;

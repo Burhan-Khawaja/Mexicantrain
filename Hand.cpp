@@ -39,3 +39,8 @@ Tile& Hand::operator[](int index) {
    // if (index > m_hand.size()) {}
     return m_hand.at(index);
 }
+
+void Hand::clearHand()
+{
+    this->m_hand.clear();
+}

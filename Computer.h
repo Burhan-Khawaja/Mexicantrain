@@ -13,7 +13,7 @@ public:
     void addTileToTrain(Tile tileToAdd) {
         playerTrain.addTileBack(tileToAdd);
     }
-    int play(Player * humanPlayer, Player * computerPlayer, Train mexicanTrain, Hand boneyard) {
+    int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) {
         std::string userInput;
         computerPlayer->printHand();
         std::cout << "\n\nSelect tile to play: \n";
@@ -28,7 +28,7 @@ public:
             humanPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         else if (userTrain == 'c') {
-            humanPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
+            computerPlayer->addTileToTrain(Tile(userInput[0] - 48, userInput[2] - 48));
         }
         else {//userTrain == m
             mexicanTrain.addTileBack(Tile(userInput[0] - 48, userInput[2] - 48));

@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <deque>
-
+#include "Round.h"
 class Game {
 public:
     int getRoundNumber();
@@ -9,11 +9,16 @@ public:
     int getComputerScore();
     void resetEngineQueue();
     int getNextEngineValue();
-    void startGame();
+    void playGame();
+    void addComputerScore(int pipVal);
+    void addHumanScore(int pipVal);
+    void playAgainPrompt();
+    void outputWinner();
 protected:
 private:
     int m_roundNumber;
-    int m_humanScore;
-    int m_computerScore;
+    int humanScore;
+    int computerScore;
+    Round round;
     std::deque<int> engineQueue;
 };

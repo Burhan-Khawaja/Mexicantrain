@@ -9,7 +9,7 @@ public:
     //BURBUR why is this virutal? doesnt need to be
     virtual void addTileToHand(Tile tileToAdd) = 0;
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
-    virtual int play(Player * humanPlayer, Player * computerPlayer, Train mexicanTrain, Hand boneyard) = 0;
+    virtual int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;
     bool tileFitsOnTrain(Tile tileToCheck, Tile trainTile);
 
@@ -17,6 +17,7 @@ public:
     void printHand();
     void removeTileFromHand(int value1, int value2);
     bool getTrainMarker();
+    void setTrainMarker();
     bool getOrphanDouble();
     //funciton to set orphan double to test code
     void setOrphanDouble() { playerTrain.setOrphanDouble(); };
@@ -26,7 +27,8 @@ public:
     Tile getLastTrainTile();
     void setTrainEndNumber( int newEndNumber);
     int getTrainEndNumber();
-    bool playerHasMove(int trainEndNumber);
+    bool playerHasMove(int trainEndNumber);    
+    bool existsValidMove(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain);
     Tile getFirstHandTile();
     //BURBUR this function is also in round
     bool verifyTileChoice(std::string userInput);
@@ -37,7 +39,11 @@ public:
     bool getMexicanTrainPlayable();
     bool checkOrphanDoubles(Player* oppositeTrain, Train mexicanTrain);
     int getHandSize();
-
+    //check that player has the tile they selected
+    bool hasTile(Tile userInputAsTile);
+    bool noPlayableTiles(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard);
+    int sumOfPips();
+    void clearData();
 protected:    
     Train playerTrain;
     Hand playerHand;

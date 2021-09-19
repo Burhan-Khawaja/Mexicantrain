@@ -21,7 +21,7 @@ bool Player::tileFitsOnTrain(Tile tileToCheck, Tile trainTile)
     }
     */
     if (tileToCheck.getFirstNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToCheck.getSecondNumber());
+        //playerTrain.setTrainEndNumber(tileToCheck.getSecondNumber());
         return true;
     }
     else if (tileToCheck.getSecondNumber() == playerTrain.getTrainEndNumber()) {
@@ -51,10 +51,16 @@ bool Player::getTrainMarker()
     return playerTrain.getMarker();
 }
 
+void Player::setTrainMarker()
+{
+    playerTrain.setMarker();
+}
+
 bool Player::getOrphanDouble()
 {
     return this->playerTrain.getOrphanDouble();
 }
+
 
 bool Player::isTrainEmpty()
 {
@@ -93,6 +99,21 @@ bool Player::playerHasMove(int trainEndNumber)
         }
     }
     return false;
+}
+
+bool Player::existsValidMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain)
+{
+    bool validMove = false;
+    if (this->humanTrainPlayable && playerHasMove(humanPlayer->getTrainEndNumber())) {
+        validMove = true;
+    }
+    if (this->computerTrainPlayable && playerHasMove(computerPlayer->getTrainEndNumber())) {
+        validMove = true;
+    }
+    if (this->mexicanTrainPlayable && playerHasMove(mexicanTrain.getTrainEndNumber())) {
+        validMove = true;
+    }
+    return validMove;
 }
 
 Tile Player::getFirstHandTile()
@@ -143,7 +164,7 @@ bool Player::validateTrainChoice(char userTrain)
 
     }
     else if (userTrain == 'm' && !getMexicanTrainPlayable()) {
-        std::cout << "Mexican train not implemented yet jeez. will ad later";
+        std::cout << "Error: You are not allowed to play on the Mexican Train";
         return false;
     }
 
@@ -193,3 +214,64 @@ int Player::getHandSize()
 {
     return this->playerHand.getSize();
 }
+
+bool Player::hasTile(Tile userInputAsTile)
+{
+    for (int i = 0; i < playerHand.getSize(); i++) {
+        if (playerHand[i].getFirstNumber() == userInputAsTile.getFirstNumber() && playerHand[i].getSecondNumber() == userInputAsTile.getSecondNumber()) {
+            return true;
+        }
+    }
+    return false;
+}
+//true- tile is drawn and playable
+//false- tile not drawn, or unlayable and user has to skip turn.
+bool Player::noPlayableTiles(Player * humanPlayer, Player * computerPlayer, Train & mexicanTrain, Hand & boneyard)
+{
+    if (boneyard.getSize() == 0) {
+        std::cout << "Boneyard is empty, a marker is placed on your train";
+        this->setTrainMarker();
+        return false;
+    }
+    else {
+        Tile boneyardTile = boneyard.getTile(0);
+        boneyard.removeTile(0);
+        this->addTileToHand(boneyardTile);
+        bool validMove = this->existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
+        if (!validMove) {
+            std::cout << "You have no valid moves after taking the tile ";
+            boneyardTile.printTile();
+            std::cout << " from the boneyard.\nA marker has been place on your train.";
+            this->setTrainMarker();
+            return false;
+        }
+        else {//player has valid move.
+            std::cout << "The tile drawn from the boneyard, ";
+            boneyardTile.printTile();
+            std::cout << " is playable. restarting turn.";
+            return true;
+        }
+    }
+}
+
+int Player::sumOfPips()
+{
+    int total = 0;
+    for (int i = 0; i < playerHand.getSize(); i++) {
+        total += playerHand[i].getFirstNumber();
+        total += playerHand[i].getSecondNumber();
+    }
+    return total;
+}
+
+void Player::clearData()
+{
+    this->playerTrain.clearTrain();
+    this->playerHand.clearHand();
+}
+
+
+
+
+
+

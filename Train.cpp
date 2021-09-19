@@ -99,3 +99,8 @@ int Train::getTrainEndNumber()
 {
     return this->trainEndNumber;
 }
+
+void Train::clearTrain()
+{
+    this->trainDeque.clear();
+}

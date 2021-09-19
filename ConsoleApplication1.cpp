@@ -102,20 +102,28 @@ int main()
     std::cout << "Welcome to Mexican Train!\n";
     //tileTesting(); 
     //handTesting();
-    roundTesting();
+    //roundTesting();
     //gameTesting();
     //trainTesting(); 
     //playerTesting();
 
-//    Player* humanTest = new Human;
- //   Player* computerPlayer = new Computer;
- //   Train mexicanTrain;
-    
-//    humanTest->play2Test(humanTest, computerPlayer, mexicanTrain);
-
-
+    Game mexicanTrain;
+    mexicanTrain.playGame();
 }
 
 
 
-//FOR TRAIN CLASS - need to add print computer train/print human train.
+//things left:
+/*
+
+need to finish sequence for when player has no valid move
+    (have to check that the tile drawn is playable. and make the user play it.)
+have to deal with player placing 2 doubles, and need to make sure that the third tile placed is a non double tile
+
+have to figure out end condition for round
+have game keep score of score of human/player rounds, and load it constantly
+create menu for player to save game/select turn/exit game etc etc,
+have to 
+
+
+*/

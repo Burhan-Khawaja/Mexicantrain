@@ -12,6 +12,7 @@ public:
     Tile getTile(int);
     int getSize();
     Tile& operator[](int index);
+    void clearHand();
 protected:
 private:
     std::vector<Tile> m_hand;
