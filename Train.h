@@ -23,6 +23,7 @@ public:
     void setTrainEndNumber(int newEndNumber);
     int getTrainEndNumber();
     void clearTrain();
+    std::deque<Tile> getTrainDeque();
 protected:
 private:
     bool marker;

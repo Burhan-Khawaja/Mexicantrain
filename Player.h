@@ -44,6 +44,9 @@ public:
     bool noPlayableTiles(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard);
     int sumOfPips();
     void clearData();
+    const std::deque<Tile> getTrain();
+    const std::vector<Tile> getHand();
+
 protected:    
     Train playerTrain;
     Hand playerHand;

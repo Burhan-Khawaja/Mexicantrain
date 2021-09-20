@@ -278,6 +278,18 @@ void Player::clearData()
     this->playerHand.clearHand();
 }
 
+const std::deque<Tile> Player::getTrain()
+{
+    return this->playerTrain.getTrainDeque();
+}
+
+const std::vector<Tile> Player::getHand()
+{
+    std::cout << "Vectoooor size: " << playerHand.getHand().size();
+
+    return this->playerHand.getHand();
+}
+
 
 
 

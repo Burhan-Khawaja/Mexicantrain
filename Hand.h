@@ -13,6 +13,7 @@ public:
     int getSize();
     Tile& operator[](int index);
     void clearHand();
+    const std::vector<Tile> getHand();
 protected:
 private:
     std::vector<Tile> m_hand;

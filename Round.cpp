@@ -53,14 +53,32 @@ void Round::dealTiles() {
 
 }
 
-int Round::startRound()
+int Round::startRound(bool serialiedStart)
 {
+    //step 1- check if we are starting the game from a fle we already loaded.
+    //if we are, then we do not have ot instantiate deck or remove engine tile, shuffle the deck etc. we can just start
+    //if we are NOT loading the game from a file, we must setup the game properly.
     //instantiate deck by creating all tiles. remove the current engine tile, and shuffle the deck and deal the tiles to player and comptuer.
-    instantiateDeck();
-    removeEngineTile();
-    shuffleDeck();
-    dealTiles();
-    setEngineTile();
+    if(!serialiedStart){
+        instantiateDeck();
+        removeEngineTile();
+        shuffleDeck();
+        dealTiles();
+        setEngineTile();
+    }
+    int pipsValue = startTurn();
+    //game is over, remove all lingering data incase user wants to play another round.
+    //HOWEVER if we want to save the game, then we dont want to clean the data. we want to keep it
+    //so we check if the pipsValue returned is -10, which is our value for a user choosing to save the game
+    if (pipsValue != -10) {
+        cleanData();
+    }
+    return pipsValue;
+}
+
+//BURBUR plan on reminv this function
+int Round::serializedRoundStart()
+{
     int pipsValue = startTurn();
     //game is over, remove all lingering data incase u ser wants to play another round.
     cleanData();
@@ -77,6 +95,7 @@ void Round::removeEngineTile()
     m_boneyard.removeTile(engineValue, engineValue);
 }
 
+//BURBUR NOT SETTING ENGINE TILE, SHOULD BE RENAMED TO SETTRAINENDNUMBER
 void Round::setEngineTile()
 {
     humanPlayer->setTrainEndNumber(engineInt);
@@ -101,6 +120,16 @@ int Round::getNextEngineValue() {
     return tmpVal;
 }
 
+void Round::setEngineValue(int engineVal)
+{
+    if (engineQueue.empty()) {
+        resetEngineQueue();
+    }
+    while (this->engineInt != engineVal) {
+        engineInt = getNextEngineValue();
+    }
+}
+
 int Round::startTurn()
 {
     //
@@ -110,6 +139,10 @@ int Round::startTurn()
     do {
         std::cout << "\n\n\n\Current Trains:\n";
         printTrainAndEngine();
+        char userChoice = outputMenu(true);
+        if (userChoice == 's') {
+            return -10; //-10 is the code to save game
+        }
         computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
         if (computerPipsLeft > 0) {
             humanWon = true;
@@ -119,6 +152,7 @@ int Round::startTurn()
         std::cout << "\n\nCurrent Trains:\n";
         printTrainAndEngine();        
         std::cout << "\n\n\n\n";
+        outputMenu(false);
         humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
         if (humanPipsLeft > 0) {
             computerWon = true;
@@ -213,10 +247,7 @@ bool Round::verifyTileChoice(std::string userInput)
     return true;
 }
 
-bool Round::playerHasMove()
-{
-    return false;
-}
+
 
 
 
@@ -269,38 +300,6 @@ void Round::playedDoubleTile(char userInput)
 
 bool Round::validateTrainChoice(char userTrain, Tile userTile)
 {
-    /*
-    if (userTrain == 'h' && getHumanTrainPlayable()) {
-        if (humanPlayer->tileFitsOnTrain(userTile, engineInt, humanPlayer->getFirstTrainTile()) == false) {
-            std::cout << "Error: the tile you entered: ";
-            userTile.printTile();
-            std::cout << " is not a valid tile since it does not fit on the human train.\n";
-            return false;
-        }
-        humanPlayer->addTileToTrain(userTile);
-    }
-    else if (userTrain == 'c' && getComputerTrainPlayable()) {
-        if (computerPlayer->tileFitsOnTrain(userTile, engineInt, computerPlayer->getLastTrainTile()) == false) {
-            std::cout << "Error: the tile you entered: ";
-            userTile.printTile();
-            std::cout << " is not a valid tile.\n";
-            return false;
-        }
-        computerPlayer->addTileToTrain(userTile);
-    }
-    else if (userTrain == 'm' && getMexicanTrainPlayable()) {
-        std::cout << "Mexican train not implemented yet jeez. will ad later";
-        if (mexicanTrain.isEmpty()) {
-
-        }
-    }
-    else {
-        std::cout << "Error: The train you selected does not exist or is unplayable." << std::endl;
-        return false;
-    }
-    
-    return true;
-    */
     return false;
 }
 
@@ -329,16 +328,116 @@ void Round::cleanData()
     this->mexicanTrain.clearTrain();
 }
 
+void Round::setHand(std::deque<Tile> tiles, int whoseHand)
+{
+    for (int i = 0; i < tiles.size(); i++) {
+        if (whoseHand == 0) {
+            //add to computer hand
+            computerPlayer->addTileToHand(tiles[i]);
+        }
+        else if (whoseHand == 1) {
+             //add to human hand        
+            humanPlayer->addTileToHand(tiles[i]);
+        }
+        else if (whoseHand == 2) {
+            //add to boneyard.
+            m_boneyard.addTile(tiles[i]);
+        }
+    }
+}
+
+void Round::setTrain(std::deque<Tile> tiles, int whoseTrain)
+{
+    for (int i = 0; i < tiles.size(); i++) {
+        //set train values
+        if (whoseTrain == 0) {
+            //add to computer hand
+            computerPlayer->addTileToTrain(tiles[i]);
+        }
+        else if (whoseTrain == 1) {
+            //add to human hand        
+            humanPlayer->addTileToTrain(tiles[i]); 
+        }
+        else if (whoseTrain == 2) {
+            //add to boneyard.
+            mexicanTrain.addTileBack(tiles[i]);
+        }
+    }
+    //set train end numbers.
+    if (whoseTrain == 0) {
+        //set computer train end number
+        computerPlayer->setTrainEndNumber(tiles.at(0).getFirstNumber());
+    }
+    else if (whoseTrain == 1) {
+        //set human train end number        
+        humanPlayer->setTrainEndNumber(tiles.at(tiles.size() - 1).getSecondNumber());
+    }
+    else if (whoseTrain == 2) {
+        //set mexican train end number
+        mexicanTrain.setTrainEndNumber(tiles.at(tiles.size() - 1).getSecondNumber());
+    }
+}
+
+char Round::outputMenu(bool humanTurn)
+{
+    char userInput;
+    std::cout << "Save the game (S/s)\n";
+    std::cout << "Make a move (M/m)\n";
+    if (humanTurn) {
+        std::cout << "Ask for help(only before human player plays) (H/h)\n";
+    }
+    std::cout << "Quit the game (Q/q)\n\n";
+    std::cin >> userInput;
+    userInput = tolower(userInput);
+
+    if (userInput == 's') {
+        return 's';
+    }
+}
+
+const std::vector<Tile> Round::getHands(int whoseHand)
+{
+    
+    if (whoseHand == 0) {
+        //computer hand        
+
+        return this->computerPlayer->getHand();
+    }
+    else if (whoseHand == 1) {
+        //human hand
+        return this->humanPlayer->getHand();
+    }
+    else {
+        //boneyard
+        return this->m_boneyard.getHand();
+    }
+}
+
+const std::deque<Tile> Round::getTrains(int whoseTrains)
+{
+    if (whoseTrains == 0) {
+        //computer hand        
+
+        return this->computerPlayer->getTrain();
+    }
+    else if (whoseTrains == 1) {
+        //human hand
+        return this->humanPlayer->getTrain();
+    }
+    else {
+        //boneyard
+        return this->mexicanTrain.getTrainDeque();
+    }
+}
+
+int Round::getEngineInt()
+{
+    return this->engineInt;
+}
 
 
 
 
-
-
-
-//validate tile
-//validate usabel trains
-//
 
 //check if any train has orphan double, 
 //check if op's train has marker
@@ -366,3 +465,9 @@ might have to move the playerHasMove class to player class.
 playerHasmove(int engineUnit, computer/human/mexicanTrain.hangingNumber(),
 does any tile in the players hand match the trains hanging number?
 */
+
+
+//g1 culture
+//g3 social capital
+//g4 negative social ?
+//g6 ideology

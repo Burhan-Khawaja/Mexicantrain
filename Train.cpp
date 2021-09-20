@@ -106,3 +106,8 @@ void Train::clearTrain()
 {
     this->trainDeque.clear();
 }
+
+std::deque<Tile> Train::getTrainDeque()
+{
+    return this->trainDeque;
+}

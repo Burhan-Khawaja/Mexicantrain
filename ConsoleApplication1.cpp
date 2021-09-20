@@ -58,7 +58,7 @@ void roundTesting() {
     //roundTest.instantiateDeck();
     //roundTest.shuffleDeck();
     //roundTest.dealTiles();
-    roundTest.startRound();
+    roundTest.startRound(false);
 }
 
 void gameTesting() {

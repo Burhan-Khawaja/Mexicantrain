@@ -18,7 +18,8 @@ public:
     void instantiateDeck();
     void shuffleDeck();
     void dealTiles();
-    int startRound();
+    int startRound(bool serialiedStart);
+    int serializedRoundStart();
     void whoGoesFirst();
     //remove engine tile from deck
     void removeEngineTile();
@@ -27,6 +28,7 @@ public:
 //THESE 2 FUNCTIONS ARE INGAME CLASS, MIGHT HAVE TO FIGURE O UT WHERE THEY ARE BETTER SUITED.
     void resetEngineQueue();
     int getNextEngineValue();
+    void setEngineValue(int engineVal);
     int startTurn();
     void printTrainAndEngine();
     void printHands();
@@ -58,6 +60,13 @@ public:
     int endRound();
     bool getWinner();
     void cleanData();
+    void setHand(std::deque<Tile> tiles, int whoseHand);
+    void setTrain(std::deque<Tile> tiles, int whoseTrain);    
+    char outputMenu(bool computerTurn);
+    void saveGame();
+    const std::vector<Tile> getHands(int whoseHand);
+    const std::deque<Tile> getTrains(int whoseTrains);
+    int getEngineInt();
 
 protected:
 private:
