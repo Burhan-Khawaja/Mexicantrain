@@ -26,6 +26,8 @@ public:
     void setHand(std::deque<Tile> tiles, int whoseHand);
     void saveGame();
     std::deque<Tile> parseLineOfTiles(std::string input, bool& setMarker);
+    void printDequeToFile(std::ofstream& file, std::deque<Tile>& tiles);
+
 protected:
 private:
     int roundNumber;

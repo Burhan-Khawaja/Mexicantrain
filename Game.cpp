@@ -1,7 +1,7 @@
 #include "Game.h"
 
 int Game::getRoundNumber() {
-    return 0;
+    return this->roundNumber;
 }
 
 void Game::setRoundNumber(int roundNum)
@@ -10,7 +10,7 @@ void Game::setRoundNumber(int roundNum)
 }
 
 int Game::getHumanScore() {
-    return 0;
+    return this->humanScore;
 }
 
 void Game::setHumanScore(int hScore)
@@ -19,7 +19,7 @@ void Game::setHumanScore(int hScore)
 }
 
 int Game::getComputerScore() {
-    return 0;
+    return this->computerScore;
 }
 
 void Game::setComputerScore(int cScore)
@@ -184,7 +184,8 @@ void Game::loadGame()
             if (computerData) {
                 //vector is returned, so if its computer data, then pop it off the front if its computer, back if tis human.
                 if (setMarker) {
-                    //set comp train marker
+                    //set computer train marker. Pass in 0 since that represents the computer train
+                    round.setTrainMarker(0);
                 }
                 //back of train contains engine that we dont want to print, so pop it off
                 tileDeque.pop_back();
@@ -197,6 +198,7 @@ void Game::loadGame()
             else {//human train
                 if (setMarker) {
                     //set human train marker
+                    round.setTrainMarker(1);
                 }
                 //front of human train contains engine tile that we dont want added to the actual train, so pop it off
                 tileDeque.pop_front();
@@ -243,12 +245,17 @@ void Game::saveGame()
     std::vector<Tile> handVector;
     std::deque<Tile> trainDeque;
     handVector = round.getHands(0);
+    /*
     for (int i = 0; i < handVector.size(); i++) {
         file << handVector[i].getFirstNumber();
         file << "-";
         file << handVector[i].getSecondNumber();
         file << " ";
     }
+    */    
+    //convert vector returned when we get the hand to a deque and print it to the file
+    std::deque<Tile> computerHandDeque(handVector.begin(), handVector.end());
+    printDequeToFile(file, computerHandDeque);
     handVector.clear();
     //print hand to file.
     file << "\n\tTrain: ";
@@ -256,26 +263,65 @@ void Game::saveGame()
     if (round.getComputerTrainMarker()) {
         file << "M ";
     }
-    for (int i = 0; i < trainDeque.size(); i++) {
-        file << trainDeque[i].getFirstNumber();
-        file << "-";
-        file << trainDeque[i].getSecondNumber();
-        file << " ";
-    }
+    //for (int i = 0; i < trainDeque.size(); i++) {
+    //    file << trainDeque[i].getFirstNumber();
+    //    file << "-";
+    //    file << trainDeque[i].getSecondNumber();
+    //    file << " ";
+    //}
+    printDequeToFile(file, trainDeque);
+    trainDeque.clear();
     file << round.getEngineInt() << "-" << round.getEngineInt() << "\n";
     
     //print train to file
-    file << "\n";
+    file << "\nHuman:\n\tScore: ";
+    file << getHumanScore();
+    file << "\n\tHand: ";
+    //get human hand
+    handVector = round.getHands(1);
+    std::deque<Tile> humanHandDeque(handVector.begin(), handVector.end());
+    printDequeToFile(file, humanHandDeque);
+    handVector.clear();
 
+    file << "\n";
+    file << "\tTrain: ";
+    trainDeque = round.getTrains(1);
+    if (round.getHumanTrainMarker()) {
+        file << "M ";
+    }
+    file << round.getEngineInt() << "-" << round.getEngineInt() << " ";
+    printDequeToFile(file, trainDeque);
+    trainDeque.clear();
+    file << "\n\nMexican Train: ";
+    trainDeque = round.getTrains(2);
+    printDequeToFile(file, trainDeque);
+
+    //PRINT BONEYARD
+    file << "\n\nBoneyard: ";
+    handVector = round.getHands(2);
+    std::deque<Tile> boneyard(handVector.begin(), handVector.end());
+    
+    printDequeToFile(file, boneyard);
+    
+
+
+    //BURBUR HAVE TO INCLUDE THE LAST LINE OF THE FILE, WHICH IS WHOSE TURN IT IS.
     file.close();
-    //NEED FUNCTIONS TO GET HANDS/ TRAINS. file << round.
 
 }
 
+void Game::printDequeToFile(std::ofstream& file, std::deque<Tile>& tiles) {
+    for (int i = 0; i < tiles.size(); i++) {
+        file << tiles[i].getFirstNumber();
+        file << "-";
+        file << tiles[i].getSecondNumber();
+        file << " ";
+    }
+    tiles.empty();
+}
 
 //parse a line that contains tiles, and return a deque of tiles.
-std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker)
-{
+std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker) {
     std::deque<Tile> tileDeque;
     std::cout << "\n\n\nLine we are dealing with: \n\n";
     std::cout << input;

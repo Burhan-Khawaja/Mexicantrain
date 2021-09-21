@@ -193,6 +193,22 @@ bool Round::getComputerTrainMarker()
     return this->computerPlayer->getTrainMarker();
 }
 
+void Round::setTrainMarker(int whoseTrain)
+{
+    if (whoseTrain == 0) {
+        //computer train
+        this->computerPlayer->setTrainMarker();
+    }
+    else if (whoseTrain == 1) {
+        //human train
+        this->humanPlayer->setTrainMarker();
+    }
+    else if (whoseTrain == 2) {
+        //mehicano train
+        mexicanTrain.setMarker();
+    }
+}
+
 
 void Round::checkHumansPlayableTrains()
 {

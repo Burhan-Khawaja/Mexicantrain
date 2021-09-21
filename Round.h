@@ -39,6 +39,7 @@ public:
     //check human train for marker
     bool getHumanTrainMarker();
     bool getComputerTrainMarker();
+    void setTrainMarker(int whoseTrain);
     //1 function to check forr computer or player?
     //we could do 2 functions, checkHumansPlayableTrains(), and checkComputerPlayableTrains.
     bool checkOrphanDoubles();
