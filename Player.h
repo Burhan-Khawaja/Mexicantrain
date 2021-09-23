@@ -44,8 +44,11 @@ public:
     bool noPlayableTiles(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard);
     int sumOfPips();
     void clearData();
+    Tile playerTileChoice();
     const std::deque<Tile> getTrain();
     const std::vector<Tile> getHand();
+    void findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, Tile& bestTile, char& train);
+    std::vector<Tile> getPlayableTiles(std::vector<Tile> playerHand, int trainEndNumber);
 
 protected:    
     Train playerTrain;

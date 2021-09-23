@@ -47,6 +47,5 @@ void Hand::clearHand()
 
 const std::vector<Tile> Hand::getHand()
 {
-    std::cout << "Vectr size: " << m_hand.size();
     return this->m_hand;
 }
