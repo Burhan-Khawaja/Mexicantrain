@@ -310,8 +310,13 @@ const std::vector<Tile> Player::getHand()
     return this->playerHand.getHand();
 }
 
-void Player::findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, Tile& bestTile, char& train)
+std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, std::vector<Tile>& bestTiles, std::vector<char>& trains)
 {
+    std::string bestMoveExplination = "";
+    bool turnFinished = false;
+    //computerPlayer->addTileToHand(Tile(9, 9));
+    //stores what tiles the computer will play. either 1 single tile, a double and a non doubl, or 2 doubles and a non double.
+    std::vector<Tile> tilesPlayed;
     std::vector<Tile> mexicanPlayableTiles;
     std::vector<Tile> humanPlayableTiles;
     std::vector<Tile> computerPlayableTiles;
@@ -319,49 +324,114 @@ void Player::findBestMove(Player * humanPlayer, Player * computerPlayer, Train& 
     std::vector<Tile> mexicanDoubles;
     std::vector<Tile> humanDoubles;
     std::vector<Tile> computerDoubles;
-
-    if (this->getMexicanTrainPlayable()) {
-        mexicanPlayableTiles = getPlayableTiles(this->getHand(), mexicanTrain.getTrainEndNumber());
+    //create a temporary hand that we can change and see what moves are available without changing the players actual hand.
+    std::vector<Tile> tmpVector = this->getHand();
+    Hand tempPlayerHand;
+    for (int i = 0; i < tmpVector.size(); i++) {
+        tempPlayerHand.addTile(tmpVector[i]);
     }
-    if (this->getComputerTrainPlayable()) {
-        computerPlayableTiles = getPlayableTiles(this->getHand(), computerPlayer->getTrainEndNumber());
-    }
-    if (this->getHumanTrainPlayable()) {
-        humanPlayableTiles = getPlayableTiles(this->getHand(), humanPlayer->getTrainEndNumber());
-    }
-
-    //search for all double tiles.
-    for (int i = 0; i < mexicanPlayableTiles.size(); i++) {
-        if (mexicanPlayableTiles[i].isDouble()) {
-            mexicanDoubles.push_back(mexicanPlayableTiles[i]);
+    int doublesPlayed = 0;
+    
+    do {
+        mexicanPlayableTiles.clear();
+        humanPlayableTiles.clear();
+        computerPlayableTiles.clear();
+        mexicanDoubles.clear();
+        humanDoubles.clear();
+        computerDoubles.clear();
+        if (this->getMexicanTrainPlayable()) {
+            mexicanPlayableTiles = getPlayableTiles(tempPlayerHand.getHand(), mexicanTrain.getTrainEndNumber());
         }
-    }
-
-    for (int i = 0; i < humanPlayableTiles.size(); i++) {
-        if (humanPlayableTiles[i].isDouble()) {
-            humanDoubles.push_back(humanPlayableTiles[i]);
+        if (this->getComputerTrainPlayable()) {
+            computerPlayableTiles = getPlayableTiles(tempPlayerHand.getHand(), computerPlayer->getTrainEndNumber());
         }
-    }
-
-    for (int i = 0; i < computerPlayableTiles.size(); i++) {
-        if (computerPlayableTiles[i].isDouble()) {
-            computerDoubles.push_back(computerPlayableTiles[i]);
+        if (this->getHumanTrainPlayable()) {
+            humanPlayableTiles = getPlayableTiles(tempPlayerHand.getHand(), humanPlayer->getTrainEndNumber());
         }
-    }
 
-    //Start playing tiles. if the mexican train is playable, check if we can play a double on it. if we cant, play a normal tile
-    //BUBUR THIS SHOULD BE IT. we should check for other playable doubles.
-    if (getMexicanTrainPlayable()) {
-        if(!mexicanDoubles.empty()) {
-            mexicanTrain.addTileBack(mexicanDoubles[0]);
-        }
-        else {
-            if (!mexicanPlayableTiles.empty()) {
-                //BURBUR HAVE TO ADD TILE PROPERLY TO MEXICAN TRAIN AND MAKE SURE THE NUMBERS MATCH UP
-                mexicanTrain.addTileBack(mexicanPlayableTiles[0]);
+        //search for all double tiles.
+        for (int i = 0; i < mexicanPlayableTiles.size(); i++) {
+            if (mexicanPlayableTiles[i].isDouble()) {
+                mexicanDoubles.push_back(mexicanPlayableTiles[i]);
             }
         }
-    }
+
+        for (int i = 0; i < humanPlayableTiles.size(); i++) {
+            if (humanPlayableTiles[i].isDouble()) {
+                humanDoubles.push_back(humanPlayableTiles[i]);
+            }
+        }
+
+        for (int i = 0; i < computerPlayableTiles.size(); i++) {
+            if (computerPlayableTiles[i].isDouble()) {
+                computerDoubles.push_back(computerPlayableTiles[i]);
+            }
+        }
+
+        //Start playing tiles. if the mexican train is playable, check if we can play a double on it. if we cant, play a normal tile
+        //BUBUR THIS SHOULD BE IT. we should check for other playable doubles.
+        //PLAY ANY VALID DOUBLE TILES
+        if (getMexicanTrainPlayable() & !mexicanDoubles.empty() && doublesPlayed < 2) {
+            //BURBUR dont want to add tiles yet to trains.mexicanTrain.addTileBack(mexicanDoubles[0]);
+            tilesPlayed.push_back(mexicanDoubles[0]);
+            if (mexicanDoubles[0].getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(mexicanDoubles[0].getSecondNumber());
+            }
+            else if (mexicanDoubles[0].getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(mexicanDoubles[0].getFirstNumber());
+                mexicanDoubles[0].swapNumbers();
+            }
+            //mexicanTrain.addTileBack(mexicanDoubles[0]);
+            tempPlayerHand.removeTile(mexicanDoubles[0].getFirstNumber(), mexicanDoubles[0].getSecondNumber());
+            bestTiles.push_back(mexicanDoubles[0]);
+            trains.push_back('m');
+            doublesPlayed++;
+            continue;
+            /*}//BURBUR HERE WE PLAY SINGLE TILE WE'LL MOVE THIS DOWN LATER.
+            else {
+                if (!mexicanPlayableTiles.empty()) {
+                    //BURBUR HAVE TO ADD TILE PROPERLY TO MEXICAN TRAIN AND MAKE SURE THE NUMBERS MATCH UP
+                    mexicanTrain.addTileBack(mexicanPlayableTiles[0]);
+                    break;
+                }
+            }*/
+        }
+        else if (getComputerTrainPlayable() && !computerDoubles.empty() && doublesPlayed < 2) {
+            //computerPlayer->addTileToTrain(computerDoubles[0]);
+            tempPlayerHand.removeTile(computerDoubles[0].getFirstNumber(), computerDoubles[0].getSecondNumber());
+            bestTiles.push_back(computerDoubles[0]);
+            trains.push_back('c');
+            doublesPlayed++;
+            continue;
+            /*
+            else {
+                if (!computerPlayableTiles.empty()) {
+                    computerPlayer->addTileToTrain(computerPlayableTiles[0]);
+                    break;
+                }
+
+            }
+            */
+        }
+
+        //play valid single tiles
+        if (getMexicanTrainPlayable() && !mexicanPlayableTiles.empty()) {
+            if (mexicanPlayableTiles[0].getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(mexicanPlayableTiles[0].getSecondNumber());
+            }
+            else if (mexicanPlayableTiles[0].getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
+                mexicanTrain.setTrainEndNumber(mexicanPlayableTiles[0].getFirstNumber());
+                mexicanPlayableTiles[0].swapNumbers();
+            }
+            //mexicanTrain.addTileBack(mexicanPlayableTiles[0]);
+            bestTiles.push_back(mexicanPlayableTiles[0]);          
+            tempPlayerHand.removeTile(mexicanPlayableTiles[0].getFirstNumber(), mexicanPlayableTiles[0].getSecondNumber());
+            trains.push_back('m');
+        }
+        
+        return bestMoveExplination;
+    } while (turnFinished == false); 
+    
 }
 
 /*if (userInputAsTile.getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
@@ -386,4 +456,21 @@ std::vector<Tile> Player::getPlayableTiles(std::vector<Tile> playerHand, int tra
         }
     }
     return playableTiles;
+}
+
+void Player::printGameState(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engineInt)
+{
+    std::cout << "\n\t         Round: " << roundNumber;
+    std::cout << "\nHuman Score: " << humanScore;
+    std::cout << "\t\t\tComputer Score: " << computerScore;
+    std::cout << "\nTrains: \n";
+    computerPlayer->printTrain();
+    std::cout << " " << engineInt << " - " << engineInt << " ,";
+    humanPlayer->printTrain();
+    std::cout << "\n\nHuman players hand: \n";
+    humanPlayer->printHand();
+    std::cout << "\n\nComputer Players Hand: \n";
+    computerPlayer->printHand();
+
+
 }

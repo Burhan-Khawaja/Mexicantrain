@@ -18,8 +18,7 @@ public:
     void instantiateDeck();
     void shuffleDeck();
     void dealTiles();
-    int startRound(bool serialiedStart);
-    int serializedRoundStart();
+    int startRound(bool serialiedStart, int humanScore, int computerScore, int roundNumber);
     void whoGoesFirst();
     //remove engine tile from deck
     void removeEngineTile();
@@ -29,20 +28,13 @@ public:
     void resetEngineQueue();
     int getNextEngineValue();
     void setEngineValue(int engineVal);
-    int startTurn();
+    int startTurn(int humanScore, int computerScore, int roundNumber);
     void printTrainAndEngine();
-    void printHands();
-    void playerHasTile(Tile tileToCheck);
-    //function could be here but it could also fgit in player class.
-    void tileFitsOnTrain(Tile tileToCheck);
     Tile drawFromBoneyard();
     //check human train for marker
     bool getHumanTrainMarker();
     bool getComputerTrainMarker();
     void setTrainMarker(int whoseTrain);
-    //1 function to check forr computer or player?
-    //we could do 2 functions, checkHumansPlayableTrains(), and checkComputerPlayableTrains.
-    bool checkOrphanDoubles();
     void checkHumansPlayableTrains();
     void checkComputerPlayableTrains();
     void resetPlayableTrains();
@@ -51,10 +43,6 @@ public:
     bool getMexicanTrainPlayable();
     //verify that user enered a valid tile format.
     bool verifyTileChoice(std::string userInput);
-    bool isDouble(Tile tileToCheck);
-    //moved to player class for time being.
-    bool playerHasMove();
-
     //this function will deal with the set of rules and things to do when a user plays a tile that is a double.
     void playedDoubleTile(char userInput);
     bool validateTrainChoice(char userTrain,Tile userTile);
@@ -64,10 +52,11 @@ public:
     void setHand(std::deque<Tile> tiles, int whoseHand);
     void setTrain(std::deque<Tile> tiles, int whoseTrain);    
     char outputMenu(bool computerTurn);
-    void saveGame();
     const std::vector<Tile> getHands(int whoseHand);
     const std::deque<Tile> getTrains(int whoseTrains);
     int getEngineInt();
+    
+    void printGameState(int humanScore, int computerScore, int roundNumber);
 
 protected:
 private:

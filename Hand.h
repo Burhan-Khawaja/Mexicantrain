@@ -10,7 +10,7 @@ public:
     void removeTile(int index1, int index2);
     void printHand();
     Tile getTile(int);
-    int getSize();
+    int const getSize();
     Tile& operator[](int index);
     void clearHand();
     const std::vector<Tile> getHand();

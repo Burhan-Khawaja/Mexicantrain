@@ -196,20 +196,21 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
     }while (validMoveSelected == false);
 }
 
-int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard) {
+int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engine) {
     bool humanTurn = true;
+    this->printGameState(humanPlayer, computerPlayer, mexicanTrain, boneyard, humanScore, computerScore, roundNumber, engine);
     /*
     //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
     int tempTestVal = humanPlayer->getHandSize();
     for (int i = 0; i < tempTestVal ; i++) {
         humanPlayer->removeTileFromHand(humanPlayer->getFirstHandTile().getFirstNumber(), humanPlayer->getFirstHandTile().getSecondNumber());
-    }*/
+    }
     addTileToHand(Tile(9, 9));
     addTileToHand(Tile(9, 7));
     addTileToHand(Tile(9, 9));
     addTileToHand(Tile(9, 8));
     addTileToHand(Tile(8, 8));
-
+*/
     do {
         if (checkOrphanDoubles(computerPlayer, mexicanTrain) == false) {
             computerTrainPlayable = computerPlayer->getTrainMarker();
@@ -230,8 +231,8 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             }
         }
 
-        std::cout << "Player One's turn to play: \nPlayer One's Hand: \n";
-        printHand();
+        std::cout << "Player One's turn to play: \n";
+        //printHand();
         Tile userInputAsTile = playerTileChoice();
         if (userInputAsTile.getFirstNumber() == -1 && userInputAsTile.getSecondNumber() == -1) {
             continue;

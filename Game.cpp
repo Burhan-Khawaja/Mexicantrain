@@ -53,10 +53,10 @@ void Game::playGame() {
     } while (userChoice != 's' && userChoice != 'l');
     if (userChoice == 'l') {
         loadGame();
-        pipValue = round.startRound(true);
+        pipValue = round.startRound(true, this->getHumanScore(),this->getComputerScore(),this->getRoundNumber());
     }
     else {    
-        pipValue = round.startRound(false);//start round returns pip value.
+        pipValue = round.startRound(false, this->getHumanScore(), this->getComputerScore(), this->getRoundNumber());//start round returns pip value.
     }
     if (pipValue = -10) {
         //user wants to save the game
@@ -347,6 +347,13 @@ std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker) {
         tileDeque.push_back(Tile(fNum, sNum));
     }
     while (line >> tiles) {
+
+        if (tiles == "M") {
+            //if we parse a "M" in the line, it means that we reached the end of the train and it has a marker on it. 
+            //set the marker to true and end the function
+            setMarker == true; 
+            return tileDeque;
+        }
         std::cout << tiles << "\n";
         int fNum = (int)tiles[0] - 48;
         int sNum = (int)tiles[2] - 48;

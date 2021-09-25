@@ -6,7 +6,8 @@ public:
     Computer();
     void addTileToHand(Tile tileToAdd);
     void addTileToTrain(Tile tileToAdd);
-    int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard);
+    int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber,int engine);
+    int checkGameWon(Player * humanPlayer);
 protected:
 private:
 

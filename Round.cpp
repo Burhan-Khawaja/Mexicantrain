@@ -53,7 +53,7 @@ void Round::dealTiles() {
 
 }
 
-int Round::startRound(bool serialiedStart)
+int Round::startRound(bool serialiedStart, int humanScore, int computerScore, int roundNumber)
 {
     //step 1- check if we are starting the game from a fle we already loaded.
     //if we are, then we do not have ot instantiate deck or remove engine tile, shuffle the deck etc. we can just start
@@ -66,24 +66,18 @@ int Round::startRound(bool serialiedStart)
         dealTiles();
         setEngineTile();
     }
-    int pipsValue = startTurn();
+    int pipsValue = startTurn(humanScore, computerScore, roundNumber);
     //game is over, remove all lingering data incase user wants to play another round.
     //HOWEVER if we want to save the game, then we dont want to clean the data. we want to keep it
     //so we check if the pipsValue returned is -10, which is our value for a user choosing to save the game
     if (pipsValue != -10) {
         cleanData();
     }
+
     return pipsValue;
 }
 
-//BURBUR plan on reminv this function
-int Round::serializedRoundStart()
-{
-    int pipsValue = startTurn();
-    //game is over, remove all lingering data incase u ser wants to play another round.
-    cleanData();
-    return pipsValue;
-}
+
 
 void Round::whoGoesFirst()
 {
@@ -130,30 +124,31 @@ void Round::setEngineValue(int engineVal)
     }
 }
 
-int Round::startTurn()
+int Round::startTurn(int humanScore, int computerScore, int roundNumber)
 {
     //
     int humanPipsLeft;
     int computerPipsLeft;
 
     do {
-        std::cout << "\n\n\n\Current Trains:\n";
-        printTrainAndEngine();
+        //BURBUR remove commented code since its doing stuff with the old text menu thing.
+       /// std::cout << "\n\n\n\Current Trains:\n";
+        //printTrainAndEngine();
         char userChoice = outputMenu(true);
         if (userChoice == 's') {
             return -10; //-10 is the code to save game
         }
-        computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
+        computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber,this->getEngineInt());
         if (computerPipsLeft > 0) {
             humanWon = true;
             return computerPipsLeft;
         }
-        std::cout << "\n\n\t\t\t\tComputer Turn!";
-        std::cout << "\n\nCurrent Trains:\n";
-        printTrainAndEngine();        
-        std::cout << "\n\n\n\n";
+        ///std::cout << "\n\n\t\t\t\tComputer Turn!";
+        //std::cout << "\n\nCurrent Trains:\n";
+        //printTrainAndEngine();        
+        //std::cout << "\n\n\n\n";
         outputMenu(false);
-        humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard);
+        humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber,this->getEngineInt());
         if (humanPipsLeft > 0) {
             computerWon = true;
             return humanPipsLeft;
@@ -264,56 +259,6 @@ bool Round::verifyTileChoice(std::string userInput)
 }
 
 
-
-
-
-void Round::playedDoubleTile(char userInput)
-{
-    bool validTileSelected;
-    do {
-        bool playerHasMove = false;
-        if (getHumanTrainPlayable() && humanPlayer->playerHasMove(humanPlayer->getTrainEndNumber())) {
-            playerHasMove = true;
-        }
-        if (getComputerTrainPlayable() && humanPlayer->playerHasMove(computerPlayer->getTrainEndNumber())) {
-            playerHasMove = true;
-        }
-        if (getMexicanTrainPlayable()) {
-
-        }
-
-        if (playerHasMove == false) {
-            std::cout << "Error player has no valid move. Train has become an orphan double.";
-            if (userInput == 'm') {
-                mexicanTrain.setOrphanDouble();
-            }
-            else if (userInput == 'c') {
-                computerPlayer->setOrphanDouble();
-            }
-            else {
-                humanPlayer->setOrphanDouble();
-            }
-        }
-        std::string secondUserTile;
-        std::cout << "\nYou have played a double tile, you are allowed to play another tile\n";
-        humanPlayer->printHand();
-        std::cout << "Choose a tile to play in 0-0 format: \n";
-        std::cin >> secondUserTile;
-        if (!verifyTileChoice(secondUserTile)) {
-            std::cout << " Restarting Turn.\n\n";
-        }
-        char secondUserTrain;
-        if(!verifyTileChoice(secondUserTile)) {
-            std::cout << " Restarting Turn.\n\n";
-        }
-        std::cout << "\nChoose a train to play the tile on (h/H for human, c/C for computer, or m/M for mexican train): ";
-        std::cin >> secondUserTrain;
-        secondUserTrain = tolower(secondUserTrain);
-        validateTrainChoice(secondUserTrain, Tile(secondUserTile[0]-48, secondUserTile[2]-48));
-        validTileSelected = false;
-    } while (validTileSelected = true);
-}
-
 bool Round::validateTrainChoice(char userTrain, Tile userTile)
 {
     return false;
@@ -364,6 +309,10 @@ void Round::setHand(std::deque<Tile> tiles, int whoseHand)
 
 void Round::setTrain(std::deque<Tile> tiles, int whoseTrain)
 {
+    //if deque of tiles is empty, then we dont need to add anything so just return
+    if (tiles.empty()) {
+        return;
+    }
     for (int i = 0; i < tiles.size(); i++) {
         //set train values
         if (whoseTrain == 0) {
@@ -382,7 +331,7 @@ void Round::setTrain(std::deque<Tile> tiles, int whoseTrain)
     //set train end numbers.
     if (whoseTrain == 0) {
         //set computer train end number
-        computerPlayer->setTrainEndNumber(tiles.at(0).getFirstNumber());
+        computerPlayer->setTrainEndNumber(tiles.at(tiles.size() - 1).getFirstNumber());
     }
     else if (whoseTrain == 1) {
         //set human train end number        
@@ -450,6 +399,11 @@ int Round::getEngineInt()
 {
     return this->engineInt;
 }
+
+void Round::printGameState(int humanScore, int computerScore, int roundNumber)
+{
+}
+
 
 
 

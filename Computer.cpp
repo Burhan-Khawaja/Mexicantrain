@@ -20,22 +20,60 @@ void Computer::addTileToTrain(Tile tileToAdd) {
     }
     playerTrain.addTileFront(tileToAdd);
 }
-//BURBUR NEED TO MO VE THIS FUNCTION TO PLAYER CLASS SO HUMAN CAN USE IT TOO.
-int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard) {
-    //COMNPUTER AI CODE BELOW
-    //if mexican train playable: 
 
+//BURBUR NEED TO MO VE THIS FUNCTION TO PLAYER CLASS SO HUMAN CAN USE IT TOO.
+int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engine) {
+    
+    
+    //REMOVE ALL TILE SFROM HAND TO MAKE TESTING EASIER.
+    //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
+    //int tempTestVal = computerPlayer->getHandSize();
+    /*
+    while (computerPlayer->getHandSize() > 0) {
+        computerPlayer->removeTileFromHand(computerPlayer->getFirstHandTile().getFirstNumber(), computerPlayer->getFirstHandTile().getSecondNumber());
+    }
+    computerPlayer->addTileToHand(Tile(9, 9));
+    computerPlayer->addTileToHand(Tile(9, 8));
+    computerPlayer->addTileToHand(Tile(8, 8));
+    computerPlayer->addTileToHand(Tile(8, 8));
+    computerPlayer->addTileToHand(Tile(7, 8));
+*/
+    //COMNPUTER AI CODE BELOW
+    //if mexican train playable:
+
+    std::vector<Tile> tilesToPlay;
+    std::vector<char> trainsToPlayOn;
+    
     if (checkOrphanDoubles(humanPlayer, mexicanTrain) == false) {
         humanTrainPlayable = humanPlayer->getTrainMarker();
         this->computerTrainPlayable = true;
         this->mexicanTrainPlayable = true;
     }
-    Tile tileToPlay;
-    char trainToPlayOn;
-
+    
     //BURBUR doesnt work since I might end up playing multiple tiles
-    findBestMove(humanPlayer, computerPlayer, mexicanTrain, boneyard, tileToPlay, trainToPlayOn);
-
+    std::string reasoning = findBestMove(humanPlayer, computerPlayer, mexicanTrain, boneyard, tilesToPlay, trainsToPlayOn);
+    if (!tilesToPlay.empty()) {
+        for (int i = 0; i < tilesToPlay.size(); i++) {
+            if (trainsToPlayOn[i] == 'c') {
+                computerPlayer->addTileToTrain(tilesToPlay[i]);
+            }
+            else if (trainsToPlayOn[i] == 'h') {
+                humanPlayer->addTileToTrain(tilesToPlay[i]);
+            }
+            else {
+                //MEXICAN TRAIN 
+                mexicanTrain.addTileBack(tilesToPlay[i]);
+            }
+            computerPlayer->removeTileFromHand(tilesToPlay[i].getFirstNumber(), tilesToPlay[i].getSecondNumber());
+            if (computerPlayer->getHandSize() == 0) {
+                //checkGameWon returns pips of human player.
+                return checkGameWon(humanPlayer);
+            }
+        }
+    }
+    std::cout << reasoning << "\n";
+    tilesToPlay.clear();
+    trainsToPlayOn.clear();
     /*
     //OLD TESTING CODE BELOW. CAN IGNORE.
     std::string userInput;
@@ -61,6 +99,13 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
     return -1;
 
 
+}
+int Computer::checkGameWon(Player * humanPlayer)
+{
+    if (this->getHandSize() == 0) {
+        std::cout << "\n\n\nyou lost! the computer won.\n\n\n";
+        return humanPlayer->sumOfPips();
+    }
 }
 /*
 std::vector<Tile> Computer::getPlayableTiles(std::vector<Tile> playerHand, int trainEndNumber)
