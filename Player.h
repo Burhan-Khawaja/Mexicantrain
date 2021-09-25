@@ -50,6 +50,7 @@ public:
     std::string findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, std::vector<Tile>& bestTiles, std::vector<char>& trains);
     std::vector<Tile> getPlayableTiles(std::vector<Tile> playerHand, int trainEndNumber);
     void printGameState(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engineInt);
+    std::string interpretBestMove(std::vector<Tile>& bestTiles, std::vector<char>& trains);
 protected:    
     Train playerTrain;
     Hand playerHand;

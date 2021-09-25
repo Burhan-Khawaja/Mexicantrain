@@ -24,7 +24,8 @@ void Computer::addTileToTrain(Tile tileToAdd) {
 //BURBUR NEED TO MO VE THIS FUNCTION TO PLAYER CLASS SO HUMAN CAN USE IT TOO.
 int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engine) {
     
-    
+    this->printGameState(humanPlayer, computerPlayer, mexicanTrain, boneyard, humanScore, computerScore, roundNumber, engine);
+
     //REMOVE ALL TILE SFROM HAND TO MAKE TESTING EASIER.
     //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
     //int tempTestVal = computerPlayer->getHandSize();
@@ -49,9 +50,21 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
         this->computerTrainPlayable = true;
         this->mexicanTrainPlayable = true;
     }
-    
+    bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
+    if (!validMove) {
+        bool skipTurn = noPlayableTiles(humanPlayer, computerPlayer, mexicanTrain, boneyard);
+        //BURBUR refactor this code
+        if (skipTurn == false) {//drawn tile is not playable, skip turn after a marker is placed on train.
+            //humanTurn = false;
+            //continue;
+        }
+        else {
+            //continue;
+        }
+    }
     //BURBUR doesnt work since I might end up playing multiple tiles
     std::string reasoning = findBestMove(humanPlayer, computerPlayer, mexicanTrain, boneyard, tilesToPlay, trainsToPlayOn);
+    interpretBestMove(tilesToPlay, trainsToPlayOn);
     if (!tilesToPlay.empty()) {
         for (int i = 0; i < tilesToPlay.size(); i++) {
             if (trainsToPlayOn[i] == 'c') {
@@ -71,7 +84,7 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
             }
         }
     }
-    std::cout << reasoning << "\n";
+    std::cout <<"\n\n" << interpretBestMove(tilesToPlay, trainsToPlayOn);
     tilesToPlay.clear();
     trainsToPlayOn.clear();
     /*

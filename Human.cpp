@@ -63,11 +63,17 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
         std::string trainSelected;
         if (userTrain == 'h' && tileFitsOnTrain(userInputAsTile, this->getTrainEndNumber())) {
             humanPlayer->addTileToTrain(userInputAsTile);
+            if (humanPlayer->getOrphanDouble()) {
+                humanPlayer->resetOrphanDouble();
+            }
             validTileSelected = true;
             trainSelected = "human";
         }
         else if (userTrain == 'c' && tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
             computerPlayer->addTileToTrain(userInputAsTile);
+            if (computerPlayer->getOrphanDouble()) {
+                computerPlayer->resetOrphanDouble();
+            }
             validTileSelected = true;
             trainSelected = "computer";
         }
@@ -75,6 +81,9 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
             //mexican train
             trainSelected = "mexican";
             mexicanTrain.addTileBack(userInputAsTile);
+            if (mexicanTrain.getOrphanDouble()) {
+                mexicanTrain.resetOrphanDouble();
+            }
             validTileSelected = true;
         }
         if (validTileSelected == false) {
@@ -151,17 +160,26 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
                 bool validTileSelected = false;
                 if (userTrain == 'h' && tileFitsOnTrain(userInputAsTile, this->getTrainEndNumber())) {
                     humanPlayer->addTileToTrain(userInputAsTile);
+                    if (humanPlayer->getOrphanDouble()) {
+                        humanPlayer->resetOrphanDouble();
+                    }
                     trainSelected = "human";
                     validTileSelected = true;
                 }
                 else if (userTrain == 'c' && tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
                     computerPlayer->addTileToTrain(userInputAsTile);
+                    if (computerPlayer->getOrphanDouble()) {
+                        computerPlayer->resetOrphanDouble();
+                    }
                     validTileSelected = true;
                     trainSelected = "computer";
                 }
                 else if (userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
                     //mexican train
                     mexicanTrain.addTileBack(userInputAsTile);
+                    if (mexicanTrain.getOrphanDouble()) {
+                        mexicanTrain.resetOrphanDouble();
+                    }
                     trainSelected = "mexican";
                     validTileSelected = true;
                 }
@@ -265,10 +283,16 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
         bool validTileSelected = false;
         if (userTrain == 'h' && this->tileFitsOnTrain(userInputAsTile, this->getTrainEndNumber())) {
             humanPlayer->addTileToTrain(userInputAsTile);
+            if (humanPlayer->getOrphanDouble()) {
+                humanPlayer->resetOrphanDouble();
+            }
             validTileSelected = true;
         }
         else if (userTrain == 'c' && computerPlayer->tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
             computerPlayer->addTileToTrain(userInputAsTile);
+            if (computerPlayer->getOrphanDouble()) {
+                computerPlayer->resetOrphanDouble();
+            }
             validTileSelected = true;
         }
         else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
@@ -278,9 +302,13 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             }
             else if (userInputAsTile.getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
                 mexicanTrain.setTrainEndNumber(userInputAsTile.getFirstNumber());
+                
                 userInputAsTile.swapNumbers();
             }
             mexicanTrain.addTileBack(userInputAsTile); 
+            if (mexicanTrain.getOrphanDouble()) {
+                mexicanTrain.resetOrphanDouble();
+            }
             validTileSelected = true;
         }
         if (validTileSelected == false) {

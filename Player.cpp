@@ -305,8 +305,6 @@ const std::deque<Tile> Player::getTrain()
 
 const std::vector<Tile> Player::getHand()
 {
-    std::cout << "Vectoooor size: " << playerHand.getHand().size();
-
     return this->playerHand.getHand();
 }
 
@@ -396,12 +394,21 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
                 }
             }*/
         }
+        else if (getHumanTrainPlayable() && !humanDoubles.empty() && doublesPlayed < 2) {
+            tempPlayerHand.removeTile(humanDoubles[0].getFirstNumber(), humanDoubles[1].getSecondNumber());
+            bestTiles.push_back(humanDoubles[0]);
+            trains.push_back('h');
+            doublesPlayed++;
+            continue;
+        }
         else if (getComputerTrainPlayable() && !computerDoubles.empty() && doublesPlayed < 2) {
             //computerPlayer->addTileToTrain(computerDoubles[0]);
             tempPlayerHand.removeTile(computerDoubles[0].getFirstNumber(), computerDoubles[0].getSecondNumber());
             bestTiles.push_back(computerDoubles[0]);
             trains.push_back('c');
             doublesPlayed++;
+            //bestMoveExplination += computerDoubles[0].getFirstNumber() + " - " + computerDoubles[0].getSecondNumber();
+            //bestMoveExplination += " on the computer train since it was a double tile. ";
             continue;
             /*
             else {
@@ -413,6 +420,7 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
             }
             */
         }
+        
 
         //play valid single tiles
         if (getMexicanTrainPlayable() && !mexicanPlayableTiles.empty()) {
@@ -427,8 +435,18 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
             bestTiles.push_back(mexicanPlayableTiles[0]);          
             tempPlayerHand.removeTile(mexicanPlayableTiles[0].getFirstNumber(), mexicanPlayableTiles[0].getSecondNumber());
             trains.push_back('m');
+            return bestMoveExplination;
         }
-        
+        if (getHumanTrainPlayable() && !humanPlayableTiles.empty()) {
+            bestTiles.push_back(humanPlayableTiles[0]);
+            trains.push_back('h');
+            return bestMoveExplination;
+        }
+        if (getComputerTrainPlayable() && !computerPlayableTiles.empty()) {
+            bestTiles.push_back(computerPlayableTiles[0]);
+            trains.push_back('c');
+            return bestMoveExplination;
+        }
         return bestMoveExplination;
     } while (turnFinished == false); 
     
@@ -460,6 +478,7 @@ std::vector<Tile> Player::getPlayableTiles(std::vector<Tile> playerHand, int tra
 
 void Player::printGameState(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engineInt)
 {
+    std::cout << "=================================================================\n";
     std::cout << "\n\t         Round: " << roundNumber;
     std::cout << "\nHuman Score: " << humanScore;
     std::cout << "\t\t\tComputer Score: " << computerScore;
@@ -467,10 +486,53 @@ void Player::printGameState(Player* humanPlayer, Player* computerPlayer, Train& 
     computerPlayer->printTrain();
     std::cout << " " << engineInt << " - " << engineInt << " ,";
     humanPlayer->printTrain();
+    std::cout << "\nMeixcan Train: ";
+    mexicanTrain.printTrain();
     std::cout << "\n\nHuman players hand: \n";
     humanPlayer->printHand();
     std::cout << "\n\nComputer Players Hand: \n";
     computerPlayer->printHand();
+    std::cout << "\nNext boneyard tile: ";
+    if (boneyard.getSize() != 0) {
+        boneyard.getTile(0).printTile();
+    }
+    else {
+        std::cout << "Empty";
+    }
+    std::cout << "\n\n";
 
+}
 
+std::string Player::interpretBestMove(std::vector<Tile>& bestTiles, std::vector<char>& trains)
+{
+    std::string explination;
+    for (int i = 0; i < bestTiles.size(); i++) {
+        if (bestTiles[i].isDouble()) {
+            explination += std::to_string(bestTiles[i].getFirstNumber()) + " - " + std::to_string(bestTiles[i].getSecondNumber());
+            explination += " was played on the ";
+            if (trains[i] == 'm') {
+                explination += "mexican";
+            }
+            else if (trains[i] == 'c') {
+                explination += "computer";
+            }
+            else {
+                explination += "human";
+            }
+            explination += " train because it was a valid double tile.";
+        }
+    }
+    explination += std::to_string(bestTiles.back().getFirstNumber()) + " - " + std::to_string(bestTiles.back().getSecondNumber());
+    explination += " was played on the ";
+    if (trains.back() == 'm') {
+        explination += "mexican";
+    }
+    else if (trains.back() == 'c') {
+        explination += "computer";
+    }
+    else {
+        explination += "human";
+    }
+    explination += " train because it was the largest tile.";
+    return explination;
 }
