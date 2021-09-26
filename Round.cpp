@@ -6,10 +6,6 @@ Round::Round()
 {
     this->humanPlayer = new Human;
     this->computerPlayer = new Computer;
-    //computerPlayer->setTrainEndNumber(this->engineInt );
-    //humanPlayer->setTrainEndNumber(this->engineInt);
-    //mexicanTrain.setTrainEndNumber(this->engineInt);
-
 }
 
 void Round::instantiateDeck() {
@@ -65,6 +61,7 @@ int Round::startRound(bool serialiedStart, int humanScore, int computerScore, in
         shuffleDeck();
         dealTiles();
         setEngineTile();
+        whoGoesFirst(humanScore, computerScore);
     }
     int pipsValue = startTurn(humanScore, computerScore, roundNumber);
     //game is over, remove all lingering data incase user wants to play another round.
@@ -79,10 +76,41 @@ int Round::startRound(bool serialiedStart, int humanScore, int computerScore, in
 
 
 
-void Round::whoGoesFirst()
+void Round::whoGoesFirst(int humanScore, int computerScore)
 {
+    if (humanScore < computerScore) {
+        std::cout << "The human has a lower score, so you get to go first. \n";
+        setHumanTurn();
+        return;
+    }
+    else if (computerScore < humanScore) {
+        std::cout << "The computer has a lower score, so the computer goes first.\n";
+        setComputerTurn();
+        return;
+    }
+    //coin flip: 
+    int userChoice;
+    do {
+        std::cout << "\n\nBoth players have the same score.\nA coint toss will determine who goes first.\n";
+        std::cout << "Enter 1 for heads, 2 for tails: ";
+        std::cin >> userChoice;
+        if (userChoice != 1 && userChoice != 2) {
+            std::cout << "Error: invalid value entered. Try again.\n";
+        }
+    } while (userChoice != 1 && userChoice != 2);
+
+    int randomNum = (rand() % 2) + 1;
+    if (randomNum == userChoice) {
+        std::cout << "\nCongratulations! you guessed correctly and you have the first turn.\n\n";
+        setHumanTurn();
+    }
+    else {
+        std::cout << "\nSorry, you guessed wrong and the computer goes first.\n\n";
+        setComputerTurn();
+    }
 }
 
+//remove the engine tile from the boneyard
 void Round::removeEngineTile()
 {
     int engineValue = getNextEngineValue();
@@ -104,6 +132,7 @@ void Round::resetEngineQueue() {
     }
 }
 
+
 int Round::getNextEngineValue() {
     if (engineQueue.empty()) {
         resetEngineQueue();
@@ -114,6 +143,7 @@ int Round::getNextEngineValue() {
     return tmpVal;
 }
 
+//used for when we load a game.
 void Round::setEngineValue(int engineVal)
 {
     if (engineQueue.empty()) {
@@ -127,43 +157,43 @@ void Round::setEngineValue(int engineVal)
 int Round::startTurn(int humanScore, int computerScore, int roundNumber)
 {
     //
-    int humanPipsLeft;
-    int computerPipsLeft;
+    int humanPipsLeft = 0;
+    int computerPipsLeft = 0;
 
     do {
         //BURBUR remove commented code since its doing stuff with the old text menu thing.
-       /// std::cout << "\n\n\n\Current Trains:\n";
+        // std::cout << "\n\n\n\Current Trains:\n";
         //printTrainAndEngine();
-        char userChoice = outputMenu(true);
-        if (userChoice == 's') {
-            return -10; //-10 is the code to save game
+        if (humanTurn) {
+            char userChoice = outputMenu(true);
+            if (userChoice == 's') {
+                return -10; //-10 is the code to save game
+            }
+        
+            computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber, this->getEngineInt());
+            setComputerTurn();
         }
-        computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber,this->getEngineInt());
+
+
         if (computerPipsLeft > 0) {
             humanWon = true;
             return computerPipsLeft;
         }
-        ///std::cout << "\n\n\t\t\t\tComputer Turn!";
-        //std::cout << "\n\nCurrent Trains:\n";
-        //printTrainAndEngine();        
-        //std::cout << "\n\n\n\n";
-        outputMenu(false);
-        humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber,this->getEngineInt());
+        
+        //BURBUR need to add dealing with user choice ehre like above.
+        if (computerTurn) {
+            outputMenu(false);
+       
+            humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber, this->getEngineInt());
+            setHumanTurn();
+        }
+
         if (humanPipsLeft > 0) {
             computerWon = true;
             return humanPipsLeft;
         }
 
     } while (true);
-}
-
-void Round::printTrainAndEngine()
-{
-    computerPlayer->printTrain();
-    std::cout << engineInt << " - " << engineInt << " ";
-    humanPlayer->printTrain();
-    std::cout << "\nMexican Train: ";
-    mexicanTrain.printTrain();
 }
 
 
@@ -349,7 +379,7 @@ char Round::outputMenu(bool humanTurn)
     std::cout << "Save the game (S/s)\n";
     std::cout << "Make a move (M/m)\n";
     if (humanTurn) {
-        std::cout << "Ask for help(only before human player plays) (H/h)\n";
+        std::cout << "Ask for help (H/h)\n";
     }
     std::cout << "Quit the game (Q/q)\n\n";
     std::cin >> userInput;
@@ -358,6 +388,11 @@ char Round::outputMenu(bool humanTurn)
     if (userInput == 's') {
         return 's';
     }
+    else if (userInput == 'q') {
+        exit(1);
+    }
+
+    
 }
 
 const std::vector<Tile> Round::getHands(int whoseHand)
@@ -400,8 +435,16 @@ int Round::getEngineInt()
     return this->engineInt;
 }
 
-void Round::printGameState(int humanScore, int computerScore, int roundNumber)
+void Round::setHumanTurn()
 {
+    this->humanTurn = true;
+    this->computerTurn = false;
+}
+
+void Round::setComputerTurn()
+{
+    this->computerTurn = true;
+    this->humanTurn = false;
 }
 
 

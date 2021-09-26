@@ -27,21 +27,7 @@ void Game::setComputerScore(int cScore)
     this->computerScore = cScore;
 }
 
-void Game::resetEngineQueue() {
-    engineQueue.clear();
-    for (int i = 0; i < 10; i++) {
-        engineQueue.push_front(i);
-    }
-}
 
-int Game::getNextEngineValue() {
-    if (engineQueue.empty()) {
-        resetEngineQueue();
-    }
-    int tmpVal = engineQueue.front();
-    engineQueue.pop_front();
-    return tmpVal;
-}
 
 void Game::playGame() {
     char userChoice;
@@ -51,6 +37,8 @@ void Game::playGame() {
         std::cin >> userChoice;
         userChoice = tolower(userChoice);
     } while (userChoice != 's' && userChoice != 'l');
+
+
     if (userChoice == 'l') {
         loadGame();
         pipValue = round.startRound(true, this->getHumanScore(),this->getComputerScore(),this->getRoundNumber());
@@ -58,10 +46,12 @@ void Game::playGame() {
     else {    
         pipValue = round.startRound(false, this->getHumanScore(), this->getComputerScore(), this->getRoundNumber());//start round returns pip value.
     }
-    if (pipValue = -10) {
+
+    if (pipValue == -10) {
         //user wants to save the game
         saveGame();
     }
+
     //have to call getWinner function to find ouit which player won.
     if (round.getWinner()) {
         addComputerScore(pipValue);
@@ -94,6 +84,7 @@ void Game::playAgainPrompt()
         }
     } while (userInput != 'y' && userInput != 'n');
     if (userInput == 'y') {
+        setRoundNumber(this->getRoundNumber() + 1);
         playGame();
     }
     else if (userInput == 'n') {
@@ -200,9 +191,12 @@ void Game::loadGame()
                     //set human train marker
                     round.setTrainMarker(1);
                 }
+                
+                //the first tile of the human train in the serialization file is the engine tile. get the firs tnumber and set the engine value./
+                round.setEngineValue(tileDeque[0].getFirstNumber()); 
                 //front of human train contains engine tile that we dont want added to the actual train, so pop it off
                 tileDeque.pop_front();
-                round.setEngineValue(tileDeque[0].getFirstNumber());
+                
                 round.setTrain(tileDeque, 1);
             }
             continue;
@@ -217,6 +211,17 @@ void Game::loadGame()
         if (a1 == "Boneyard:") {
             tileDeque = parseLineOfTiles(singleLine, setMarker);
             round.setHand(tileDeque, 2);
+        }
+        if (a1 == "Next") {
+            line >> a2 >> a3;
+            //a2 should be Player: 
+            //a3 contains computer/human.
+            if (a3 == "Computer") {
+                round.setComputerTurn();
+            }
+            else {
+                round.setHumanTurn();
+            }
         }
     }
 }

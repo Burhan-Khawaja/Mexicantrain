@@ -424,13 +424,13 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
 
         //play valid single tiles
         if (getMexicanTrainPlayable() && !mexicanPlayableTiles.empty()) {
-            if (mexicanPlayableTiles[0].getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
+            /*if (mexicanPlayableTiles[0].getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
                 mexicanTrain.setTrainEndNumber(mexicanPlayableTiles[0].getSecondNumber());
             }
             else if (mexicanPlayableTiles[0].getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
                 mexicanTrain.setTrainEndNumber(mexicanPlayableTiles[0].getFirstNumber());
                 mexicanPlayableTiles[0].swapNumbers();
-            }
+            }*/
             //mexicanTrain.addTileBack(mexicanPlayableTiles[0]);
             bestTiles.push_back(mexicanPlayableTiles[0]);          
             tempPlayerHand.removeTile(mexicanPlayableTiles[0].getFirstNumber(), mexicanPlayableTiles[0].getSecondNumber());

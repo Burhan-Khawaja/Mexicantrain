@@ -15,8 +15,6 @@ public:
     void setHumanScore(int hScore);
     int getComputerScore();
     void setComputerScore(int cScore);
-    void resetEngineQueue();
-    int getNextEngineValue();
     void playGame();
     void addComputerScore(int pipVal);
     void addHumanScore(int pipVal);

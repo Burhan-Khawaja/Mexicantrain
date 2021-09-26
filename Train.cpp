@@ -13,7 +13,13 @@ void Train::addTileFront(Tile tileToAdd) {
 }
 
 void Train::addTileBack(Tile tileToAdd) {
-
+    if (tileToAdd.getFirstNumber() == this->getTrainEndNumber()) {
+        this->setTrainEndNumber(tileToAdd.getSecondNumber());
+    }
+    else if (tileToAdd.getSecondNumber() == this->getTrainEndNumber()) {
+        this->setTrainEndNumber(tileToAdd.getFirstNumber());
+        tileToAdd.swapNumbers();
+    }
     trainDeque.push_back(tileToAdd);
 
 }
