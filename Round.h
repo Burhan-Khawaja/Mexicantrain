@@ -19,7 +19,7 @@ public:
     void shuffleDeck();
     void dealTiles();
     int startRound(bool serialiedStart, int humanScore, int computerScore, int roundNumber);
-    void whoGoesFirst();
+    void whoGoesFirst(int humanScore, int computerScore);
     //remove engine tile from deck
     void removeEngineTile();
     //set engine tile as first tile for both trains.
@@ -55,7 +55,10 @@ public:
     const std::vector<Tile> getHands(int whoseHand);
     const std::deque<Tile> getTrains(int whoseTrains);
     int getEngineInt();
-    
+
+    void setHumanTurn();
+    void setComputerTurn();
+
     void printGameState(int humanScore, int computerScore, int roundNumber);
 
 protected:
@@ -72,8 +75,10 @@ private:
     bool humanTrainPlayable;
     bool computerTrainPlayable;
     bool mexicanTrainPlayable;
+
     bool humanTurn;
     bool computerTurn;
+
     bool computerWon;
     bool humanWon;
 };

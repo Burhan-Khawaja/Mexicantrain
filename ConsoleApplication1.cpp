@@ -61,13 +61,7 @@ void roundTesting() {
     roundTest.startRound(false, 1,1,1);
 }
 
-void gameTesting() {
-    Game gameTest;
-    for (int i = 0; i < 20; i++) {
-        int engineValue = gameTest.getNextEngineValue();
-        std::cout << engineValue << ", ";
-    }
-}
+
 
 void trainTesting() {
     Train testTrain;    

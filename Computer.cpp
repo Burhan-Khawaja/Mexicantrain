@@ -55,11 +55,11 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
         bool skipTurn = noPlayableTiles(humanPlayer, computerPlayer, mexicanTrain, boneyard);
         //BURBUR refactor this code
         if (skipTurn == false) {//drawn tile is not playable, skip turn after a marker is placed on train.
-            //humanTurn = false;
-            //continue;
+            this->setTrainMarker();
+            return 0;
         }
         else {
-            //continue;
+            return 0;
         }
     }
     //BURBUR doesnt work since I might end up playing multiple tiles

@@ -297,14 +297,14 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
         }
         else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
             //mexican train
+            /*
             if (userInputAsTile.getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
                 mexicanTrain.setTrainEndNumber(userInputAsTile.getSecondNumber());
             }
             else if (userInputAsTile.getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
                 mexicanTrain.setTrainEndNumber(userInputAsTile.getFirstNumber());
-                
                 userInputAsTile.swapNumbers();
-            }
+            }*/
             mexicanTrain.addTileBack(userInputAsTile); 
             if (mexicanTrain.getOrphanDouble()) {
                 mexicanTrain.resetOrphanDouble();
