@@ -58,7 +58,7 @@ public:
 
     void setHumanTurn();
     void setComputerTurn();
-
+    bool getHumanTurn();
     void printGameState(int humanScore, int computerScore, int roundNumber);
 
 protected:

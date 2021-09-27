@@ -35,9 +35,10 @@ public:
     bool validateTrainChoice(char userTrain);
     void playedDoubleTile(std::string userInput);    
     bool getHumanTrainPlayable();
+    void setHumanTrainPlayable();
     bool getComputerTrainPlayable();
     bool getMexicanTrainPlayable();
-    bool checkOrphanDoubles(Player* oppositeTrain, Train mexicanTrain);
+    bool checkOrphanDoubles(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain);
     int getHandSize();
     //check that player has the tile they selected
     bool hasTile(Tile userInputAsTile);

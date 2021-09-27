@@ -94,14 +94,12 @@ void Game::playAgainPrompt()
 
 void Game::outputWinner()
 {
-    std::cout << "Your score: ";
-    getHumanScore();
-    std::cout << "\nComputer Score: ";
-    getComputerScore();
+    std::cout << "Your score: " << std::to_string(getHumanScore());
+    std::cout << "\nComputer Score: " << std::to_string(getComputerScore());
     if (getHumanScore() == getComputerScore()) {
         std::cout << "\nThe game is a tie!";
     }
-    else if (getHumanScore() > getComputerScore()) {
+    else if (getHumanScore() < getComputerScore()) {
         std::cout << "\nYou won the game! congratulations";
     }
     else {
@@ -307,10 +305,15 @@ void Game::saveGame()
     std::deque<Tile> boneyard(handVector.begin(), handVector.end());
     
     printDequeToFile(file, boneyard);
-    
-
 
     //BURBUR HAVE TO INCLUDE THE LAST LINE OF THE FILE, WHICH IS WHOSE TURN IT IS.
+    file << "\n\Next Player: ";
+    if (round.getHumanTurn()) {
+        file << "Human";
+    }
+    else {
+        file << "Computer";
+    }
     file.close();
 
 }
@@ -356,7 +359,7 @@ std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker) {
         if (tiles == "M") {
             //if we parse a "M" in the line, it means that we reached the end of the train and it has a marker on it. 
             //set the marker to true and end the function
-            setMarker == true; 
+            setMarker = true; 
             return tileDeque;
         }
         std::cout << tiles << "\n";

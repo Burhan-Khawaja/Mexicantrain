@@ -42,6 +42,7 @@ bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
 
 void Player::printTrain()
 {
+    
     playerTrain.printTrain();
 }
 
@@ -184,6 +185,11 @@ bool Player::getHumanTrainPlayable()
     return this->humanTrainPlayable;
 }
 
+void Player::setHumanTrainPlayable()
+{
+    this->humanTrainPlayable = true;
+}
+
 bool Player::getComputerTrainPlayable()
 {
     return this->computerTrainPlayable;
@@ -194,27 +200,37 @@ bool Player::getMexicanTrainPlayable()
     return this->mexicanTrainPlayable;
 }
 
-bool Player::checkOrphanDoubles(Player* oppositeTrain, Train mexicanTrain)
+bool Player::checkOrphanDoubles(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain)
 {
-    if (getOrphanDouble() == true) {
-        this->humanTrainPlayable = true;
+    //1- check if there exists any orphan double on a train
+    if (humanPlayer->getOrphanDouble() == true || computerPlayer->getOrphanDouble() == true || mexicanTrain.getOrphanDouble() == true) {
+        //make all trains unplayable. later we will check which trains have orphan doubles and set them as the only trains playable
+        this->humanTrainPlayable = false;
         this->computerTrainPlayable = false;
         this->mexicanTrainPlayable = false;
+    }
+    if (humanPlayer->getOrphanDouble() == true) {
+        std::cout << "\n\nThere is an orphan double on the human train.";
+        this->humanTrainPlayable = true;
+        //this->computerTrainPlayable = false;
+        //this->mexicanTrainPlayable = false;
         return true;
     }
-    else if (oppositeTrain->getOrphanDouble() == true) {
-        this->humanTrainPlayable = false;
+    else if (computerPlayer->getOrphanDouble() == true) {
+        std::cout << "\n\nThere is an orphan double on the computer train.";
+
+        //this->humanTrainPlayable = false;
         this->computerTrainPlayable = true;
-        this->mexicanTrainPlayable = false;
+        //this->mexicanTrainPlayable = false;
         return true;
     }
     else if (mexicanTrain.getOrphanDouble() == true) {
-        this->humanTrainPlayable = false;
-        this->computerTrainPlayable = false;
+        std::cout << "\n\nThere is an orphan double on the mexican train.";
+        //this->humanTrainPlayable = false;
+        //this->computerTrainPlayable = false;
         this->mexicanTrainPlayable = true;
         return true;
     }
-    return false;
     return false;
 }
 
@@ -483,9 +499,15 @@ void Player::printGameState(Player* humanPlayer, Player* computerPlayer, Train& 
     std::cout << "\nHuman Score: " << humanScore;
     std::cout << "\t\t\tComputer Score: " << computerScore;
     std::cout << "\nTrains: \n";
+    if (computerPlayer->getTrainMarker()) {
+        std::cout << "M ";
+    }
     computerPlayer->printTrain();
     std::cout << " " << engineInt << " - " << engineInt << " ,";
     humanPlayer->printTrain();
+    if (humanPlayer->getTrainMarker()) {
+        std::cout << " M";
+    }
     std::cout << "\nMeixcan Train: ";
     mexicanTrain.printTrain();
     std::cout << "\n\nHuman players hand: \n";
@@ -533,6 +555,6 @@ std::string Player::interpretBestMove(std::vector<Tile>& bestTiles, std::vector<
     else {
         explination += "human";
     }
-    explination += " train because it was the largest tile.";
+    explination += " train because it was the largest tile.\n\n";
     return explination;
 }

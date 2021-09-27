@@ -21,7 +21,6 @@ void Computer::addTileToTrain(Tile tileToAdd) {
     playerTrain.addTileFront(tileToAdd);
 }
 
-//BURBUR NEED TO MO VE THIS FUNCTION TO PLAYER CLASS SO HUMAN CAN USE IT TOO.
 int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engine) {
     
     this->printGameState(humanPlayer, computerPlayer, mexicanTrain, boneyard, humanScore, computerScore, roundNumber, engine);
@@ -45,7 +44,7 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
     std::vector<Tile> tilesToPlay;
     std::vector<char> trainsToPlayOn;
     
-    if (checkOrphanDoubles(humanPlayer, mexicanTrain) == false) {
+    if (checkOrphanDoubles(humanPlayer,computerPlayer, mexicanTrain) == false) {
         humanTrainPlayable = humanPlayer->getTrainMarker();
         this->computerTrainPlayable = true;
         this->mexicanTrainPlayable = true;
@@ -56,9 +55,6 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
         //BURBUR refactor this code
         if (skipTurn == false) {//drawn tile is not playable, skip turn after a marker is placed on train.
             this->setTrainMarker();
-            return 0;
-        }
-        else {
             return 0;
         }
     }
@@ -85,6 +81,36 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
         }
     }
     std::cout <<"\n\n" << interpretBestMove(tilesToPlay, trainsToPlayOn);
+    //user played 2 tiles, so theres a chance that there is 1 orphan double.
+    if (trainsToPlayOn.size() >= 2) {
+        if (trainsToPlayOn[0] != trainsToPlayOn[1]) {
+            //train user played on arent equal to each other, so make the first train an orphan double
+            if (trainsToPlayOn[0] == 'm') {
+                mexicanTrain.setOrphanDouble();
+            }
+            else if (trainsToPlayOn[0] == 'c') {
+                computerPlayer->setOrphanDouble();
+            }
+            else {
+                humanPlayer->setOrphanDouble();
+            }
+        }
+    }
+    else if (trainsToPlayOn.size() == 3) {
+        if (trainsToPlayOn[1] != trainsToPlayOn[2]) {
+            //train user played on arent equal to each other, so make the first train an orphan double
+            if (trainsToPlayOn[1] == 'm') {
+                mexicanTrain.setOrphanDouble();
+            }
+            else if (trainsToPlayOn[1] == 'c') {
+                computerPlayer->setOrphanDouble();
+            }
+            else {
+                humanPlayer->setOrphanDouble();
+            }
+        }
+
+    }
     tilesToPlay.clear();
     trainsToPlayOn.clear();
     /*

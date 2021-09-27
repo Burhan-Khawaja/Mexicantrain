@@ -161,15 +161,15 @@ int Round::startTurn(int humanScore, int computerScore, int roundNumber)
     int computerPipsLeft = 0;
 
     do {
-        //BURBUR remove commented code since its doing stuff with the old text menu thing.
-        // std::cout << "\n\n\n\Current Trains:\n";
-        //printTrainAndEngine();
         if (humanTurn) {
             char userChoice = outputMenu(true);
             if (userChoice == 's') {
                 return -10; //-10 is the code to save game
             }
-        
+            std::cout << "\n\n\n";
+            std::cout << "=================================================================\n";
+            std::cout << "=======================Human Players Turn========================\n";
+            std::cout << "=================================================================\n";
             computerPipsLeft = humanPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber, this->getEngineInt());
             setComputerTurn();
         }
@@ -182,8 +182,14 @@ int Round::startTurn(int humanScore, int computerScore, int roundNumber)
         
         //BURBUR need to add dealing with user choice ehre like above.
         if (computerTurn) {
-            outputMenu(false);
-       
+            char userChoice =outputMenu(false);
+            if (userChoice == 's') {
+                return -10; //-10 is the code to save game
+            }
+            std::cout << "\n\n\n";
+            std::cout << "=================================================================\n";
+            std::cout << "=====================Computer Players Turn=======================\n";
+            std::cout << "=================================================================\n";
             humanPipsLeft = computerPlayer->play(this->humanPlayer, this->computerPlayer, this->mexicanTrain, this->m_boneyard, humanScore, computerScore, roundNumber, this->getEngineInt());
             setHumanTurn();
         }
@@ -388,6 +394,22 @@ char Round::outputMenu(bool humanTurn)
     if (userInput == 's') {
         return 's';
     }
+    else if (userInput == 'm') {
+        return 'h';
+    }
+    else if (userInput == 'h') {
+        //since we havent started playing, we have to check for orphan doubles/playable trains here.
+        if (humanPlayer->checkOrphanDoubles(this->humanPlayer, this->computerPlayer, mexicanTrain) == false) {
+            computerTrainPlayable == getComputerTrainMarker();
+            humanPlayer->setHumanTrainPlayable();
+        }
+        std::vector<Tile> bestTiles;
+        std::vector<char> trainsToPlayOn;
+        humanPlayer->findBestMove(humanPlayer,computerPlayer,mexicanTrain,m_boneyard, bestTiles, trainsToPlayOn);
+        std::string help = "I suggest you play ";
+        help = humanPlayer->interpretBestMove(bestTiles, trainsToPlayOn);
+        std::cout << help;
+    }
     else if (userInput == 'q') {
         exit(1);
     }
@@ -445,6 +467,11 @@ void Round::setComputerTurn()
 {
     this->computerTurn = true;
     this->humanTurn = false;
+}
+
+bool Round::getHumanTurn()
+{
+    return this->humanTurn;
 }
 
 

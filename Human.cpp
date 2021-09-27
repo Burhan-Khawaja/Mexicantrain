@@ -12,6 +12,7 @@ void Human::addTileToHand(Tile tileToAdd)
 }
 
 void Human::addTileToTrain(Tile tileToAdd) {
+    /*
     if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
         playerTrain.setTrainEndNumber(tileToAdd.getSecondNumber());
     }
@@ -19,7 +20,7 @@ void Human::addTileToTrain(Tile tileToAdd) {
         playerTrain.setTrainEndNumber(tileToAdd.getFirstNumber()); 
         tileToAdd.swapNumbers();
     }
-    
+    */
     playerTrain.addTileBack(tileToAdd);
 }
 
@@ -230,7 +231,7 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
     addTileToHand(Tile(8, 8));
 */
     do {
-        if (checkOrphanDoubles(computerPlayer, mexicanTrain) == false) {
+        if (checkOrphanDoubles(humanPlayer, computerPlayer, mexicanTrain) == false) {
             computerTrainPlayable = computerPlayer->getTrainMarker();
             this->humanTrainPlayable = true;
             this->mexicanTrainPlayable = true;
