@@ -3,8 +3,10 @@
 
 Train::Train()
 {
+    trainDeque = {};
     trainEndNumber = -1;
     orphanDouble = false;
+    marker = false;
 }
 
 void Train::addTileFront(Tile tileToAdd) {

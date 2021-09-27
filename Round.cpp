@@ -6,6 +6,18 @@ Round::Round()
 {
     this->humanPlayer = new Human;
     this->computerPlayer = new Computer;
+
+    this->m_boneyard;
+    this->engineQueue;
+    this->engineInt;
+    this->mexicanTrain;
+    //these 3 booleans will dictate whether a player can place a tile on a train.
+
+    this->humanTurn;
+    this->computerTurn;
+
+    this->computerWon;
+    this->humanWon;
 }
 
 void Round::instantiateDeck() {
@@ -414,7 +426,6 @@ char Round::outputMenu(bool humanTurn)
         exit(1);
     }
 
-    
 }
 
 const std::vector<Tile> Round::getHands(int whoseHand)

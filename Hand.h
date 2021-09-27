@@ -5,6 +5,7 @@
 
 class Hand {
 public:
+    Hand();
     void addTile(Tile tileToAdd);
     void removeTile(int tileToRemove);
     void removeTile(int index1, int index2);

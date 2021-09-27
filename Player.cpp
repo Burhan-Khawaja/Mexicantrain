@@ -1,6 +1,22 @@
 #include "Player.h"
 
 
+Player::Player()
+{
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    //these 3 booleans dictate weather the player can play on each train.
+    this->humanTrainPlayable = false;
+    this->computerTrainPlayable = false;
+    this->mexicanTrainPlayable = false;
+}
+
+void Player::addTileToHand(Tile tileToAdd)
+{
+    playerHand.addTile(tileToAdd);
+}
+
 bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
 {
     //BURBUR refactor this code what is this garbage? please god dont hand this into Professor Kumar. PRofessor if you see this im sorry.

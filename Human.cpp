@@ -3,24 +3,18 @@
 #include <string>
 
 Human::Human() {
-
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    //these 3 booleans dictate weather the player can play on each train.
+    this->humanTrainPlayable = false;
+    this->computerTrainPlayable = false;
+    this->mexicanTrainPlayable = false;
 }
 
-void Human::addTileToHand(Tile tileToAdd)
-{
-    playerHand.addTile(tileToAdd);
-}
 
 void Human::addTileToTrain(Tile tileToAdd) {
-    /*
-    if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToAdd.getSecondNumber());
-    }
-    else if (tileToAdd.getSecondNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToAdd.getFirstNumber()); 
-        tileToAdd.swapNumbers();
-    }
-    */
+
     playerTrain.addTileBack(tileToAdd);
 }
 
@@ -297,21 +291,13 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             validTileSelected = true;
         }
         else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
-            //mexican train
-            /*
-            if (userInputAsTile.getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
-                mexicanTrain.setTrainEndNumber(userInputAsTile.getSecondNumber());
-            }
-            else if (userInputAsTile.getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
-                mexicanTrain.setTrainEndNumber(userInputAsTile.getFirstNumber());
-                userInputAsTile.swapNumbers();
-            }*/
             mexicanTrain.addTileBack(userInputAsTile); 
             if (mexicanTrain.getOrphanDouble()) {
                 mexicanTrain.resetOrphanDouble();
             }
             validTileSelected = true;
         }
+
         if (validTileSelected == false) {
             continue;
         }

@@ -2,6 +2,11 @@
 #include <iostream>
 #include <algorithm>
 
+Hand::Hand()
+{
+    this->m_hand = {};
+}
+
 void Hand::addTile(Tile tileToAdd) {
     m_hand.push_back(tileToAdd);
 }

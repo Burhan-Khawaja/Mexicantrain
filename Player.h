@@ -6,8 +6,10 @@
 #include <string>
 class Player {
 public:
+    Player();
     //BURBUR why is this virutal? doesnt need to be
-    virtual void addTileToHand(Tile tileToAdd) = 0;
+    //virtual void addTileToHand(Tile tileToAdd) = 0;
+    void addTileToHand(Tile tileToAdd);
     virtual void addTileToTrain(Tile tileToAdd) = 0;    
     virtual int play(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber,int engine) = 0;
     //old code, changed the function to take in the second tile from the train. virtual bool tileFitsOnTrain2(Tile tileToCheck, int engineInt) = 0;

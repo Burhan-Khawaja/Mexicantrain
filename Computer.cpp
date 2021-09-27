@@ -2,13 +2,13 @@
 #include "Computer.h"
 
 Computer::Computer() {
-        //playerHand.addTile(Tile(1, 1));
-        //playerTrain.addTileFront(Tile(1, 1));
-}
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    humanTrainPlayable = false;
+    computerTrainPlayable = false;
+    mexicanTrainPlayable = false;}
 
-void Computer::addTileToHand(Tile tileToAdd) {
-    playerHand.addTile(tileToAdd);
-}
 
 void Computer::addTileToTrain(Tile tileToAdd) {
     if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
