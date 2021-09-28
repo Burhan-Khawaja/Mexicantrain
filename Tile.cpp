@@ -2,22 +2,27 @@
 #include <iostream>
 #include "Tile.h"
 
+
 Tile::Tile()
 {
+    //default constructor, set values to -1 so we know they arent valid values.
     this->T_firstNumber = -1;
     this->T_secondNumber = -1;
 }
 
+
+
 Tile::Tile(int firstNum, int secondNum) {
+    //partmentalized constructor. set first and second numbers to the integers passed in.
     this->T_firstNumber = firstNum;
     this->T_secondNumber = secondNum;
 }
 
-int Tile::getFirstNumber() {
+int const Tile::getFirstNumber()  {
     return this->T_firstNumber;
 }
 
-int Tile::getSecondNumber() {
+int const Tile::getSecondNumber() {
     return this->T_secondNumber;
 }
 
@@ -34,16 +39,9 @@ void Tile::printTile() {
     std::cout << T_firstNumber << " - " << T_secondNumber;
 }
 
-bool Tile::operator==(const Tile& lhs)
+bool const Tile::operator==(const Tile& lhs)
 {
-    // TODO: insert return statement here
     return (this->T_firstNumber == lhs.T_firstNumber && this->T_secondNumber == lhs.T_secondNumber);
-}
-
-void Tile::setValues(int val1, int val2)
-{
-    this->T_firstNumber = val1;
-    this->T_secondNumber = val2;
 }
 
 void Tile::swapNumbers()

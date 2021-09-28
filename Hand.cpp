@@ -7,6 +7,8 @@ Hand::Hand()
     this->m_hand = {};
 }
 
+
+
 void Hand::addTile(Tile tileToAdd) {
     m_hand.push_back(tileToAdd);
 }
@@ -15,7 +17,6 @@ void Hand::removeTile(int tileToRemove) {
     m_hand.erase(m_hand.begin() + tileToRemove);
 }
 
-//BURBUR need to do error checking and do something if the tile to remove is not in the hand.
 void Hand::removeTile(int value1, int value2) {
     Tile tmpTile = Tile(value1, value2);
     std::vector<Tile>::iterator iteratorPos = std::find(m_hand.begin(), m_hand.end(), tmpTile);

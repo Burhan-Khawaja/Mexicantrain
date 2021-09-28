@@ -13,6 +13,8 @@ Human::Human() {
 }
 
 
+
+
 void Human::addTileToTrain(Tile tileToAdd) {
 
     playerTrain.addTileBack(tileToAdd);
@@ -29,7 +31,6 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
             std::cout << "Error, you have no valid move.";
             humanPlayer->noPlayableTiles( humanPlayer,  computerPlayer,  mexicanTrain, boneyard);
             return;
-            //function to deal with no valid move should be here.
         }
         //ask for second tile
         std::string userTile2;
@@ -230,7 +231,7 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             this->humanTrainPlayable = true;
             this->mexicanTrainPlayable = true;
         }
-
+    
         bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
         //user has no move to play
         if (validMove == false) {
@@ -317,8 +318,10 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
         }
         humanTurn = false;
     } while (humanTurn);
+   
     return 0;
 }
+   
 
 
 

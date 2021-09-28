@@ -9,6 +9,7 @@ Game::Game()
     this->engineQueue = {};
 }
 
+
 int const Game::getRoundNumber() {
     return this->roundNumber;
 }
@@ -324,6 +325,7 @@ void Game::saveGame()
         file << "Computer";
     }
     file.close();
+    exit(1);
 
 }
 

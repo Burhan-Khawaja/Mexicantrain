@@ -8,8 +8,9 @@ public:
     Train();
     void addTileFront(Tile tileToAdd);
     void addTileBack(Tile tileToAdd);
-    Tile getLastTile();
-    Tile getFirstTile();
+    /*
+    Tile const getLastTile();
+    Tile const getFirstTile();*/
     void getLastNumber();
     void resetTrain();
     void clearMarker();
