@@ -1,6 +1,16 @@
 #include "Game.h"
 
-int Game::getRoundNumber() {
+Game::Game()
+{
+    this->roundNumber = 0;
+    this->humanScore = 0;
+    this->computerScore = 0;
+    this->round = {};
+    this->engineQueue = {};
+}
+
+
+int const Game::getRoundNumber() {
     return this->roundNumber;
 }
 
@@ -9,7 +19,7 @@ void Game::setRoundNumber(int roundNum)
     this->roundNumber = roundNum;
 }
 
-int Game::getHumanScore() {
+int const Game::getHumanScore() {
     return this->humanScore;
 }
 
@@ -28,37 +38,57 @@ void Game::setComputerScore(int cScore)
 }
 
 
+/* *********************************************************************
+Function Name: playGame
+Purpose: Start the game, and deal with the outcome of the game
+Parameters: None
+Return Value: None
+Algorithm: 1) Ask if user wants to start a fresh game, or load a game.
+           2) If the user wants to load a game, then load the game from whatever file they mention, and start the round.
+           3) If the player does not want to load a game, then initialize all the values by default and start the round.
+           4) When the user finishes the round, check if the value returned by the round class is -10. If it is, save the game
+           5) if the human player won, add the value returned to the computers sore
+              5a)else, add the value to the humans score
+           6) Prompt the user if they want to play again.
+Assistance Received: None.
+********************************************************************* */
 
 void Game::playGame() {
     char userChoice;
     int pipValue = 0;
+    //1) Ask if user wants to start a fresh game, or load a game.
     do {
         std::cout << "Start new game(s/S), or load game(l/L): ";
         std::cin >> userChoice;
         userChoice = tolower(userChoice);
     } while (userChoice != 's' && userChoice != 'l');
 
-
+    //2) If the user wants to load a game, then load the game from whatever file they mention, and start the round
     if (userChoice == 'l') {
         loadGame();
         pipValue = round.startRound(true, this->getHumanScore(),this->getComputerScore(),this->getRoundNumber());
     }
-    else {    
+    else {  
+        //3) If the player does not want to load a game, then initialize all the values by default and start the round.
+
         pipValue = round.startRound(false, this->getHumanScore(), this->getComputerScore(), this->getRoundNumber());//start round returns pip value.
     }
+    //4) When the user finishes the round, check if the value returned by the round class is - 10. If it is, save the game
 
     if (pipValue == -10) {
         //user wants to save the game
         saveGame();
     }
 
-    //have to call getWinner function to find ouit which player won.
     if (round.getWinner()) {
+        //5) if the human player won, add the value returned to the computers sore
         addComputerScore(pipValue);
     }
     else {
+        //5a)else, add the value to the humans score
         addHumanScore(pipValue);
     }
+    //6) Prompt the user if they want to play again.
     playAgainPrompt();
 }
 
@@ -94,7 +124,7 @@ void Game::playAgainPrompt()
 
 void Game::outputWinner()
 {
-    std::cout << "Your score: " << std::to_string(getHumanScore());
+    std::cout << "\n\nYour score: " << std::to_string(getHumanScore());
     std::cout << "\nComputer Score: " << std::to_string(getComputerScore());
     if (getHumanScore() == getComputerScore()) {
         std::cout << "\nThe game is a tie!";
@@ -105,6 +135,7 @@ void Game::outputWinner()
     else {
         std::cout << "You lost.";
     }
+    std::cout << "\n\n\n\n";
 }
 
 void Game::loadGame()
@@ -203,7 +234,6 @@ void Game::loadGame()
             computerData = false;
             humanData = false;
             tileDeque = parseLineOfTiles(singleLine, setMarker);
-         
             round.setTrain(tileDeque, 2);
         }
         if (a1 == "Boneyard:") {
@@ -222,6 +252,7 @@ void Game::loadGame()
             }
         }
     }
+    //check for orphan doubles.
 }
 
 //int whosehand will tell the round class where to add the tiles.
@@ -248,14 +279,6 @@ void Game::saveGame()
     std::vector<Tile> handVector;
     std::deque<Tile> trainDeque;
     handVector = round.getHands(0);
-    /*
-    for (int i = 0; i < handVector.size(); i++) {
-        file << handVector[i].getFirstNumber();
-        file << "-";
-        file << handVector[i].getSecondNumber();
-        file << " ";
-    }
-    */    
     //convert vector returned when we get the hand to a deque and print it to the file
     std::deque<Tile> computerHandDeque(handVector.begin(), handVector.end());
     printDequeToFile(file, computerHandDeque);
@@ -266,12 +289,6 @@ void Game::saveGame()
     if (round.getComputerTrainMarker()) {
         file << "M ";
     }
-    //for (int i = 0; i < trainDeque.size(); i++) {
-    //    file << trainDeque[i].getFirstNumber();
-    //    file << "-";
-    //    file << trainDeque[i].getSecondNumber();
-    //    file << " ";
-    //}
     printDequeToFile(file, trainDeque);
     trainDeque.clear();
     file << round.getEngineInt() << "-" << round.getEngineInt() << "\n";
@@ -315,6 +332,7 @@ void Game::saveGame()
         file << "Computer";
     }
     file.close();
+    exit(1);
 
 }
 
@@ -331,8 +349,6 @@ void Game::printDequeToFile(std::ofstream& file, std::deque<Tile>& tiles) {
 //parse a line that contains tiles, and return a deque of tiles.
 std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker) {
     std::deque<Tile> tileDeque;
-    std::cout << "\n\n\nLine we are dealing with: \n\n";
-    std::cout << input;
     std::istringstream line(input);
     std::string firstWord, secondWord;
     //firstWord should contain 'Hand', 'train', 'mexican' which are useless to us since we just need to get tiles and markers/.
@@ -362,7 +378,6 @@ std::deque<Tile> Game::parseLineOfTiles(std::string input, bool& setMarker) {
             setMarker = true; 
             return tileDeque;
         }
-        std::cout << tiles << "\n";
         int fNum = (int)tiles[0] - 48;
         int sNum = (int)tiles[2] - 48;
         tileDeque.push_back(Tile(fNum, sNum));

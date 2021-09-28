@@ -36,7 +36,7 @@ void handTesting() {
     Tile testTile(1, 1);
     Tile testTile2(0, 0);    
     Tile testTile3(0, 0);
-
+    /*
     if (testTile == testTile2) {
         std::cout << "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ";
     }
@@ -46,7 +46,7 @@ void handTesting() {
     }
     else {
         std::cout << "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ";
-    }
+    }*/
     //0,0 and 4,4 tile are present in hand but not 9,9
     testHand.removeTile(9, 9);
     testHand.removeTile(0, 0);

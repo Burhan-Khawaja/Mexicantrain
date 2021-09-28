@@ -3,24 +3,18 @@
 #include <string>
 
 Human::Human() {
-
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    //these 3 booleans dictate weather the player can play on each train.
+    this->humanTrainPlayable = false;
+    this->computerTrainPlayable = false;
+    this->mexicanTrainPlayable = false;
 }
 
-void Human::addTileToHand(Tile tileToAdd)
-{
-    playerHand.addTile(tileToAdd);
-}
 
 void Human::addTileToTrain(Tile tileToAdd) {
-    /*
-    if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToAdd.getSecondNumber());
-    }
-    else if (tileToAdd.getSecondNumber() == playerTrain.getTrainEndNumber()) {
-        playerTrain.setTrainEndNumber(tileToAdd.getFirstNumber()); 
-        tileToAdd.swapNumbers();
-    }
-    */
+
     playerTrain.addTileBack(tileToAdd);
 }
 
@@ -33,14 +27,18 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
 
         if (validMove == false) {
             std::cout << "Error, you have no valid move.";
-            humanPlayer->noPlayableTiles( humanPlayer,  computerPlayer,  mexicanTrain, boneyard);
+            bool canPlayTile = humanPlayer->noPlayableTiles( humanPlayer,  computerPlayer,  mexicanTrain, boneyard);
+            if (canPlayTile) {
+                continue;
+            }
+            else {
+                //BURBUR CHECK IF BONEYARD IS EMPTY DEAL WITH THIS if ();
+            }
             return;
-            //function to deal with no valid move should be here.
         }
         //ask for second tile
         std::string userTile2;
         std::cout << "\n\n\nYou have played a double tile. \n";
-        std::cout << "Current Trains: \n";
 
         Tile userInputAsTile = playerTileChoice();
         if (userInputAsTile.getFirstNumber() == -1 && userInputAsTile.getSecondNumber() == -1) {
@@ -218,31 +216,25 @@ void Human::playedDoubleTile(char userInput, Player* humanPlayer, Player* comput
 int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain, Hand& boneyard, int humanScore, int computerScore, int roundNumber, int engine) {
     bool humanTurn = true;
     this->printGameState(humanPlayer, computerPlayer, mexicanTrain, boneyard, humanScore, computerScore, roundNumber, engine);
-    /*
-    //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
-    int tempTestVal = humanPlayer->getHandSize();
-    for (int i = 0; i < tempTestVal ; i++) {
-        humanPlayer->removeTileFromHand(humanPlayer->getFirstHandTile().getFirstNumber(), humanPlayer->getFirstHandTile().getSecondNumber());
-    }
-    addTileToHand(Tile(9, 9));
-    addTileToHand(Tile(9, 7));
-    addTileToHand(Tile(9, 9));
-    addTileToHand(Tile(9, 8));
-    addTileToHand(Tile(8, 8));
-*/
+
     do {
         if (checkOrphanDoubles(humanPlayer, computerPlayer, mexicanTrain) == false) {
             computerTrainPlayable = computerPlayer->getTrainMarker();
             this->humanTrainPlayable = true;
             this->mexicanTrainPlayable = true;
         }
-
+    
         bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
         //user has no move to play
         if (validMove == false) {
             bool skipTurn = noPlayableTiles(humanPlayer, computerPlayer, mexicanTrain, boneyard);
             if (skipTurn == false) {//drawn tile is not playable, skip turn after a marker is placed on train.
                 humanTurn = false;
+                //human turn is over
+                //if the boneyard is empty, return -666 for an error code.
+                if (boneyard.getSize() == 0) {
+                    return -666;
+                }
                 continue;
             }
             else {
@@ -287,6 +279,9 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             if (humanPlayer->getOrphanDouble()) {
                 humanPlayer->resetOrphanDouble();
             }
+            if (humanPlayer->getTrainMarker()) {
+                humanPlayer->resetTrainMarker();
+            }
             validTileSelected = true;
         }
         else if (userTrain == 'c' && computerPlayer->tileFitsOnTrain(userInputAsTile, computerPlayer->getTrainEndNumber())) {
@@ -297,42 +292,36 @@ int Human::play(Player* humanPlayer, Player* computerPlayer, Train& mexicanTrain
             validTileSelected = true;
         }
         else if(userTrain == 'm' && tileFitsOnTrain(userInputAsTile, mexicanTrain.getTrainEndNumber())) {
-            //mexican train
-            /*
-            if (userInputAsTile.getFirstNumber() == mexicanTrain.getTrainEndNumber()) {
-                mexicanTrain.setTrainEndNumber(userInputAsTile.getSecondNumber());
-            }
-            else if (userInputAsTile.getSecondNumber() == mexicanTrain.getTrainEndNumber()) {
-                mexicanTrain.setTrainEndNumber(userInputAsTile.getFirstNumber());
-                userInputAsTile.swapNumbers();
-            }*/
             mexicanTrain.addTileBack(userInputAsTile); 
             if (mexicanTrain.getOrphanDouble()) {
                 mexicanTrain.resetOrphanDouble();
             }
             validTileSelected = true;
         }
+
         if (validTileSelected == false) {
             continue;
         }
         removeTileFromHand(userInputAsTile.getFirstNumber(), userInputAsTile.getSecondNumber());
         //BURBUR RIGHT HERE CHECK THAT THE PLAYER HAS AN EMPTY HAND AND END THE GAME IF THEY DO.
 
-        
-        //user played adouble
-        if (userInputAsTile.getFirstNumber() == userInputAsTile.getSecondNumber()) {
-            playedDoubleTile(userTrain, humanPlayer, computerPlayer, mexicanTrain, boneyard);
-        }
-
         if (humanPlayer->getHandSize() == 0) {
             std::cout << "\n\nYou Won! your hand is empty.";
             int cpuPips = computerPlayer->sumOfPips();
             return cpuPips;
         }
+
+        //user played adouble
+        if (userInputAsTile.getFirstNumber() == userInputAsTile.getSecondNumber()) {
+            playedDoubleTile(userTrain, humanPlayer, computerPlayer, mexicanTrain, boneyard);
+        }
+
         humanTurn = false;
     } while (humanTurn);
+   
     return 0;
 }
+   
 
 
 
