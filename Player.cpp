@@ -1,35 +1,26 @@
 #include "Player.h"
 
 
-bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
+Player::Player()
 {
-    //BURBUR refactor this code what is this garbage? please god dont hand this into Professor Kumar. PRofessor if you see this im sorry.
-    //BURBUR REMOVED engineint part since we set the train ends number in constructor. 
-    /*
-    if (playerTrain.getTrainEndNumber() == -1) {
-        if (tileToCheck.getFirstNumber() != engineInt && tileToCheck.getSecondNumber() != engineInt) {
-            return false;
-        }
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    //these 3 booleans dictate weather the player can play on each train.
+    this->humanTrainPlayable = false;
+    this->computerTrainPlayable = false;
+    this->mexicanTrainPlayable = false;
+}
 
-        if (tileToCheck.getFirstNumber() == engineInt) {
-            playerTrain.setTrainEndNumber(engineInt, tileToCheck.getSecondNumber());
-        }
-        else if (tileToCheck.getSecondNumber() == engineInt) {
-            playerTrain.setTrainEndNumber(engineInt, tileToCheck.getFirstNumber());
-        }
-        return true;
-    }
-    */
-    /*
-    if (tileToCheck.getFirstNumber() == playerTrain.getTrainEndNumber()) {
-        //playerTrain.setTrainEndNumber(tileToCheck.getSecondNumber());
-        return true;
-    }
-    else if (tileToCheck.getSecondNumber() == playerTrain.getTrainEndNumber()) {
-        //playerTrain.setTrainEndNumber(tileToCheck.getFirstNumber());
-       return true;
-    } */    
-    
+
+
+void Player::addTileToHand(Tile tileToAdd)
+{
+    playerHand.addTile(tileToAdd);
+}
+
+bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
+{    
     if (tileToCheck.getFirstNumber() == trainEndNumber) {
        return true;
     }
@@ -42,7 +33,6 @@ bool Player::tileFitsOnTrain(Tile tileToCheck, int trainEndNumber)
 
 void Player::printTrain()
 {
-    
     playerTrain.printTrain();
 }
 
@@ -65,12 +55,27 @@ void Player::setTrainMarker()
     playerTrain.setMarker();
 }
 
+void Player::resetTrainMarker()
+{
+    this->playerTrain.clearMarker();
+}
+
 bool Player::getOrphanDouble()
 {
     return this->playerTrain.getOrphanDouble();
 }
 
+void Player::setOrphanDouble()
+{
+    playerTrain.setOrphanDouble();
+}
 
+void Player::resetOrphanDouble()
+{
+    playerTrain.resetOrphanDouble();
+}
+
+/*buurbur burbur commented out functions dell8er
 bool Player::isTrainEmpty()
 {
     return this->playerTrain.isEmpty();
@@ -85,7 +90,7 @@ Tile Player::getLastTrainTile()
 {
     return this->playerTrain.getLastTile();
 }
-
+*/
 void Player::setTrainEndNumber( int newEndNumber)
 {
     playerTrain.setTrainEndNumber(newEndNumber);
@@ -124,12 +129,12 @@ bool Player::existsValidMove(Player * humanPlayer, Player * computerPlayer, Trai
     }
     return validMove;
 }
-
+/*
 Tile Player::getFirstHandTile()
 {
     return this->playerHand[0];
 }
-
+*/
 
 
 bool Player::verifyTileChoice(std::string userInput)
@@ -154,9 +159,6 @@ bool Player::verifyTileChoice(std::string userInput)
     return true;
 }
 
-//Function was making sure user entered valid value for the train to play, but also that the tile fit on the train.
-//dont do that. changing function so it only checks if the user is able to play on the train selected. we will handle checking if the tile fits on the train with
-//tilefitsontrain function.
 bool Player::validateTrainChoice(char userTrain)
 {
     if (userTrain != 'h' && userTrain != 'c' && userTrain != 'm') {
@@ -170,13 +172,11 @@ bool Player::validateTrainChoice(char userTrain)
     else if (userTrain == 'c' && !getComputerTrainPlayable()) {
         std::cout << "Error: You are not allowed to play on the computer train";
         return false;
-
     }
     else if (userTrain == 'm' && !getMexicanTrainPlayable()) {
         std::cout << "Error: You are not allowed to play on the Mexican Train";
         return false;
     }
-
     return true;
 }
 
@@ -195,6 +195,11 @@ bool Player::getComputerTrainPlayable()
     return this->computerTrainPlayable;
 }
 
+void Player::setComputerTrainPlayable()
+{
+    this->computerTrainPlayable = true;
+}
+
 bool Player::getMexicanTrainPlayable()
 {
     return this->mexicanTrainPlayable;
@@ -202,6 +207,7 @@ bool Player::getMexicanTrainPlayable()
 
 bool Player::checkOrphanDoubles(Player* humanPlayer, Player* computerPlayer, Train mexicanTrain)
 {
+    bool orphanDouble = false;
     //1- check if there exists any orphan double on a train
     if (humanPlayer->getOrphanDouble() == true || computerPlayer->getOrphanDouble() == true || mexicanTrain.getOrphanDouble() == true) {
         //make all trains unplayable. later we will check which trains have orphan doubles and set them as the only trains playable
@@ -210,28 +216,28 @@ bool Player::checkOrphanDoubles(Player* humanPlayer, Player* computerPlayer, Tra
         this->mexicanTrainPlayable = false;
     }
     if (humanPlayer->getOrphanDouble() == true) {
-        std::cout << "\n\nThere is an orphan double on the human train.";
+        std::cout << "\nThere is an orphan double on the human train.\n";
         this->humanTrainPlayable = true;
         //this->computerTrainPlayable = false;
         //this->mexicanTrainPlayable = false;
-        return true;
+        orphanDouble = true;
     }
-    else if (computerPlayer->getOrphanDouble() == true) {
-        std::cout << "\n\nThere is an orphan double on the computer train.";
+    if (computerPlayer->getOrphanDouble() == true) {
+        std::cout << "\nThere is an orphan double on the computer train.\n";
 
         //this->humanTrainPlayable = false;
         this->computerTrainPlayable = true;
         //this->mexicanTrainPlayable = false;
-        return true;
+        orphanDouble = true;
     }
-    else if (mexicanTrain.getOrphanDouble() == true) {
-        std::cout << "\n\nThere is an orphan double on the mexican train.";
+    if (mexicanTrain.getOrphanDouble() == true) {
+        std::cout << "\nThere is an orphan double on the mexican train.\n";
         //this->humanTrainPlayable = false;
         //this->computerTrainPlayable = false;
         this->mexicanTrainPlayable = true;
-        return true;
+        orphanDouble = true;
     }
-    return false;
+    return orphanDouble;
 }
 
 int Player::getHandSize()
@@ -248,6 +254,7 @@ bool Player::hasTile(Tile userInputAsTile)
     }
     return false;
 }
+
 //true- tile is drawn and playable
 //false- tile not drawn, or unlayable and user has to skip turn.
 bool Player::noPlayableTiles(Player * humanPlayer, Player * computerPlayer, Train & mexicanTrain, Hand & boneyard)
@@ -300,7 +307,6 @@ Tile Player::playerTileChoice()
     std::cout << "\nChoose a tile in x-y format to play (ie - 0-0)";
     std::cin >> userInput;
 
-    //BURBUR VERIFTYTILECHOICE AND HAS TILE SHOULD BE IN 1 FUNCITON
     if (!verifyTileChoice(userInput)) {
         return Tile(-1, -1);
     }
@@ -324,7 +330,7 @@ const std::vector<Tile> Player::getHand()
     return this->playerHand.getHand();
 }
 
-std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, std::vector<Tile>& bestTiles, std::vector<char>& trains)
+void Player::findBestMove(Player * humanPlayer, Player * computerPlayer, Train& mexicanTrain, Hand& boneyard, std::vector<Tile>& bestTiles, std::vector<char>& trains)
 {
     std::string bestMoveExplination = "";
     bool turnFinished = false;
@@ -346,6 +352,7 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
     }
     int doublesPlayed = 0;
     
+    
     do {
         mexicanPlayableTiles.clear();
         humanPlayableTiles.clear();
@@ -353,6 +360,17 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
         mexicanDoubles.clear();
         humanDoubles.clear();
         computerDoubles.clear();
+        //check if we have a valid move
+        /*
+        bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
+        if (!validMove) {
+            bool skipTurn = noPlayableTiles(humanPlayer, computerPlayer, mexicanTrain, boneyard);
+            if (skipTurn == false) {//drawn tile is not playable, skip turn after a marker is placed on train.
+                this->setTrainMarker();
+                return 0;
+            }
+        }
+        BURBUR we commented this out, but should im plement it here.s*/
         if (this->getMexicanTrainPlayable()) {
             mexicanPlayableTiles = getPlayableTiles(tempPlayerHand.getHand(), mexicanTrain.getTrainEndNumber());
         }
@@ -395,20 +413,11 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
                 mexicanTrain.setTrainEndNumber(mexicanDoubles[0].getFirstNumber());
                 mexicanDoubles[0].swapNumbers();
             }
-            //mexicanTrain.addTileBack(mexicanDoubles[0]);
             tempPlayerHand.removeTile(mexicanDoubles[0].getFirstNumber(), mexicanDoubles[0].getSecondNumber());
             bestTiles.push_back(mexicanDoubles[0]);
             trains.push_back('m');
             doublesPlayed++;
             continue;
-            /*}//BURBUR HERE WE PLAY SINGLE TILE WE'LL MOVE THIS DOWN LATER.
-            else {
-                if (!mexicanPlayableTiles.empty()) {
-                    //BURBUR HAVE TO ADD TILE PROPERLY TO MEXICAN TRAIN AND MAKE SURE THE NUMBERS MATCH UP
-                    mexicanTrain.addTileBack(mexicanPlayableTiles[0]);
-                    break;
-                }
-            }*/
         }
         else if (getHumanTrainPlayable() && !humanDoubles.empty() && doublesPlayed < 2) {
             tempPlayerHand.removeTile(humanDoubles[0].getFirstNumber(), humanDoubles[1].getSecondNumber());
@@ -423,18 +432,8 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
             bestTiles.push_back(computerDoubles[0]);
             trains.push_back('c');
             doublesPlayed++;
-            //bestMoveExplination += computerDoubles[0].getFirstNumber() + " - " + computerDoubles[0].getSecondNumber();
-            //bestMoveExplination += " on the computer train since it was a double tile. ";
             continue;
-            /*
-            else {
-                if (!computerPlayableTiles.empty()) {
-                    computerPlayer->addTileToTrain(computerPlayableTiles[0]);
-                    break;
-                }
 
-            }
-            */
         }
         
 
@@ -451,19 +450,23 @@ std::string Player::findBestMove(Player * humanPlayer, Player * computerPlayer, 
             bestTiles.push_back(mexicanPlayableTiles[0]);          
             tempPlayerHand.removeTile(mexicanPlayableTiles[0].getFirstNumber(), mexicanPlayableTiles[0].getSecondNumber());
             trains.push_back('m');
-            return bestMoveExplination;
+            //return bestMoveExplination;
+            return;
         }
         if (getHumanTrainPlayable() && !humanPlayableTiles.empty()) {
             bestTiles.push_back(humanPlayableTiles[0]);
             trains.push_back('h');
-            return bestMoveExplination;
+            //return bestMoveExplination;
+            return;
         }
         if (getComputerTrainPlayable() && !computerPlayableTiles.empty()) {
             bestTiles.push_back(computerPlayableTiles[0]);
             trains.push_back('c');
-            return bestMoveExplination;
+            //return bestMoveExplination;
+            return;
         }
-        return bestMoveExplination;
+        //return bestMoveExplination;
+        return;
     } while (turnFinished == false); 
     
 }
@@ -528,6 +531,7 @@ void Player::printGameState(Player* humanPlayer, Player* computerPlayer, Train& 
 std::string Player::interpretBestMove(std::vector<Tile>& bestTiles, std::vector<char>& trains)
 {
     std::string explination;
+    //print out the doubles we played.
     for (int i = 0; i < bestTiles.size(); i++) {
         if (bestTiles[i].isDouble()) {
             explination += std::to_string(bestTiles[i].getFirstNumber()) + " - " + std::to_string(bestTiles[i].getSecondNumber());
@@ -544,17 +548,21 @@ std::string Player::interpretBestMove(std::vector<Tile>& bestTiles, std::vector<
             explination += " train because it was a valid double tile.";
         }
     }
-    explination += std::to_string(bestTiles.back().getFirstNumber()) + " - " + std::to_string(bestTiles.back().getSecondNumber());
-    explination += " was played on the ";
-    if (trains.back() == 'm') {
-        explination += "mexican";
+    
+    if (!bestTiles.back().isDouble()) {
+        explination += std::to_string(bestTiles.back().getFirstNumber()) + " - " + std::to_string(bestTiles.back().getSecondNumber());
+        explination += " was played on the ";
+        if (trains.back() == 'm') {
+            explination += "mexican";
+        }
+        else if (trains.back() == 'c') {
+            explination += "computer";
+        }
+        else {
+            explination += "human";
+        }
+
+        explination += " train because it was the largest tile.\n\n";
     }
-    else if (trains.back() == 'c') {
-        explination += "computer";
-    }
-    else {
-        explination += "human";
-    }
-    explination += " train because it was the largest tile.\n\n";
     return explination;
 }

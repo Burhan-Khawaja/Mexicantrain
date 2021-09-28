@@ -3,9 +3,13 @@
 
 Train::Train()
 {
+    trainDeque = {};
     trainEndNumber = -1;
     orphanDouble = false;
+    marker = false;
 }
+
+
 
 void Train::addTileFront(Tile tileToAdd) {
 
@@ -23,8 +27,8 @@ void Train::addTileBack(Tile tileToAdd) {
     trainDeque.push_back(tileToAdd);
 
 }
-
-Tile Train::getLastTile() {
+/*
+Tile const Train::getLastTile() {
     if (trainDeque.empty()) {
         //if the train  deque is empty return a tile of value -1 -1.
         return Tile(-1, -1);
@@ -32,14 +36,14 @@ Tile Train::getLastTile() {
     return trainDeque.back();
 }
 
-Tile Train::getFirstTile()
+Tile const Train::getFirstTile()
 {
     if (trainDeque.empty()) {
         //if the train  deque is empty return a tile of value -1 -1.
         return Tile(-1, -1);
     }
     return trainDeque.front();
-}
+}*/
 
 //UNIMPLEMENTED FUNCTION what is this for?>
 void Train::getLastNumber() {

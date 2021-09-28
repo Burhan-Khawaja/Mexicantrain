@@ -1,6 +1,16 @@
 #include "Game.h"
 
-int Game::getRoundNumber() {
+Game::Game()
+{
+    this->roundNumber = 0;
+    this->humanScore = 0;
+    this->computerScore = 0;
+    this->round = {};
+    this->engineQueue = {};
+}
+
+
+int const Game::getRoundNumber() {
     return this->roundNumber;
 }
 
@@ -315,6 +325,7 @@ void Game::saveGame()
         file << "Computer";
     }
     file.close();
+    exit(1);
 
 }
 

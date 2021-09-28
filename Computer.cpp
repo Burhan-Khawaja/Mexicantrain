@@ -2,13 +2,15 @@
 #include "Computer.h"
 
 Computer::Computer() {
-        //playerHand.addTile(Tile(1, 1));
-        //playerTrain.addTileFront(Tile(1, 1));
-}
+    this->playerTrain = {};
+    this->playerHand = {};
+    this->trainLastNumber = -1;
+    humanTrainPlayable = false;
+    computerTrainPlayable = false;
+    mexicanTrainPlayable = false;}
 
-void Computer::addTileToHand(Tile tileToAdd) {
-    playerHand.addTile(tileToAdd);
-}
+
+
 
 void Computer::addTileToTrain(Tile tileToAdd) {
     if (tileToAdd.getFirstNumber() == playerTrain.getTrainEndNumber()) {
@@ -25,22 +27,6 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
     
     this->printGameState(humanPlayer, computerPlayer, mexicanTrain, boneyard, humanScore, computerScore, roundNumber, engine);
 
-    //REMOVE ALL TILE SFROM HAND TO MAKE TESTING EASIER.
-    //remove all tiles from players hand and add 1 unplayable tile for testing reasons.
-    //int tempTestVal = computerPlayer->getHandSize();
-    /*
-    while (computerPlayer->getHandSize() > 0) {
-        computerPlayer->removeTileFromHand(computerPlayer->getFirstHandTile().getFirstNumber(), computerPlayer->getFirstHandTile().getSecondNumber());
-    }
-    computerPlayer->addTileToHand(Tile(9, 9));
-    computerPlayer->addTileToHand(Tile(9, 8));
-    computerPlayer->addTileToHand(Tile(8, 8));
-    computerPlayer->addTileToHand(Tile(8, 8));
-    computerPlayer->addTileToHand(Tile(7, 8));
-*/
-    //COMNPUTER AI CODE BELOW
-    //if mexican train playable:
-
     std::vector<Tile> tilesToPlay;
     std::vector<char> trainsToPlayOn;
     
@@ -49,7 +35,10 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
         this->computerTrainPlayable = true;
         this->mexicanTrainPlayable = true;
     }
+
     bool validMove = existsValidMove(humanPlayer, computerPlayer, mexicanTrain);
+
+    
     if (!validMove) {
         bool skipTurn = noPlayableTiles(humanPlayer, computerPlayer, mexicanTrain, boneyard);
         //BURBUR refactor this code
@@ -58,13 +47,16 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
             return 0;
         }
     }
-    //BURBUR doesnt work since I might end up playing multiple tiles
-    std::string reasoning = findBestMove(humanPlayer, computerPlayer, mexicanTrain, boneyard, tilesToPlay, trainsToPlayOn);
+
+    findBestMove(humanPlayer, computerPlayer, mexicanTrain, boneyard, tilesToPlay, trainsToPlayOn);
     interpretBestMove(tilesToPlay, trainsToPlayOn);
     if (!tilesToPlay.empty()) {
         for (int i = 0; i < tilesToPlay.size(); i++) {
             if (trainsToPlayOn[i] == 'c') {
                 computerPlayer->addTileToTrain(tilesToPlay[i]);
+                if (computerPlayer->getTrainMarker()) {
+                    computerPlayer->resetTrainMarker();
+                }
             }
             else if (trainsToPlayOn[i] == 'h') {
                 humanPlayer->addTileToTrain(tilesToPlay[i]);
@@ -96,7 +88,8 @@ int Computer::play(Player * humanPlayer, Player * computerPlayer, Train& mexican
             }
         }
     }
-    else if (trainsToPlayOn.size() == 3) {
+
+    if (trainsToPlayOn.size() == 3) {
         if (trainsToPlayOn[1] != trainsToPlayOn[2]) {
             //train user played on arent equal to each other, so make the first train an orphan double
             if (trainsToPlayOn[1] == 'm') {

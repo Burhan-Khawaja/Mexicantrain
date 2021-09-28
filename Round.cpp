@@ -6,8 +6,27 @@ Round::Round()
 {
     this->humanPlayer = new Human;
     this->computerPlayer = new Computer;
+
+    this->m_boneyard;
+    this->engineQueue;
+    this->engineInt;
+    this->mexicanTrain;
+    //these 3 booleans will dictate whether a player can place a tile on a train.
+
+    this->humanTurn;
+    this->computerTurn;
+
+    this->computerWon;
+    this->humanWon;
 }
 
+/*
+Round::~Round()
+{
+    delete this->humanPlayer;
+    delete this->computerPlayer;
+}
+*/
 void Round::instantiateDeck() {
     //print out all 1-1 - 9-9 pairs
     for (int i = 0; i < 10; i++) {
@@ -74,8 +93,6 @@ int Round::startRound(bool serialiedStart, int humanScore, int computerScore, in
     return pipsValue;
 }
 
-
-
 void Round::whoGoesFirst(int humanScore, int computerScore)
 {
     if (humanScore < computerScore) {
@@ -89,18 +106,18 @@ void Round::whoGoesFirst(int humanScore, int computerScore)
         return;
     }
     //coin flip: 
-    int userChoice;
+    std::string userChoice;
     do {
         std::cout << "\n\nBoth players have the same score.\nA coint toss will determine who goes first.\n";
         std::cout << "Enter 1 for heads, 2 for tails: ";
         std::cin >> userChoice;
-        if (userChoice != 1 && userChoice != 2) {
+        if (userChoice != "1" && userChoice != "2") {
             std::cout << "Error: invalid value entered. Try again.\n";
         }
-    } while (userChoice != 1 && userChoice != 2);
+    } while (userChoice != "1" && userChoice != "2");
 
     int randomNum = (rand() % 2) + 1;
-    if (randomNum == userChoice) {
+    if (std::to_string(randomNum) == userChoice) {
         std::cout << "\nCongratulations! you guessed correctly and you have the first turn.\n\n";
         setHumanTurn();
     }
@@ -241,15 +258,7 @@ void Round::setTrainMarker(int whoseTrain)
 }
 
 
-void Round::checkHumansPlayableTrains()
-{
-
-}
-
-void Round::checkComputerPlayableTrains()
-{
-}
-
+/*
 void Round::resetPlayableTrains()
 {
     this->humanTrainPlayable = false;
@@ -271,7 +280,8 @@ bool Round::getMexicanTrainPlayable()
 {
     return this->mexicanTrainPlayable;
 }
-
+*/
+/*
 bool Round::verifyTileChoice(std::string userInput)
 {
     //have to check if string is greater then 3 because of null character ('\0')
@@ -292,14 +302,14 @@ bool Round::verifyTileChoice(std::string userInput)
         return false;
     }
     return true;
-}
+}*/
 
-
+/*
 bool Round::validateTrainChoice(char userTrain, Tile userTile)
 {
     return false;
 }
-
+*/
 int Round::endRound()
 {
     
@@ -381,15 +391,22 @@ void Round::setTrain(std::deque<Tile> tiles, int whoseTrain)
 
 char Round::outputMenu(bool humanTurn)
 {
-    char userInput;
-    std::cout << "Save the game (S/s)\n";
-    std::cout << "Make a move (M/m)\n";
-    if (humanTurn) {
-        std::cout << "Ask for help (H/h)\n";
-    }
-    std::cout << "Quit the game (Q/q)\n\n";
-    std::cin >> userInput;
-    userInput = tolower(userInput);
+    char userInput; 
+    do {
+        std::cout << "\nSave the game (S/s)\n";
+        std::cout << "Make a move (M/m)\n";
+        if (humanTurn) {
+            std::cout << "Ask for help (H/h)\n";
+        }
+        std::cout << "Quit the game (Q/q)\n\n";
+    
+        std::cin >> userInput;
+        userInput = tolower(userInput);
+        if (userInput != 's' &&  userInput != 'm' && userInput != 'h' && userInput != 'q') {
+            std::cout << "\n\nInvalid input. Try again. \n\n\n";
+        }
+    } while (userInput != 's' &&  userInput != 'm' && userInput != 'h' && userInput != 'q');
+
 
     if (userInput == 's') {
         return 's';
@@ -400,21 +417,30 @@ char Round::outputMenu(bool humanTurn)
     else if (userInput == 'h') {
         //since we havent started playing, we have to check for orphan doubles/playable trains here.
         if (humanPlayer->checkOrphanDoubles(this->humanPlayer, this->computerPlayer, mexicanTrain) == false) {
-            computerTrainPlayable == getComputerTrainMarker();
+            if (this->getComputerTrainMarker()) {
+                humanPlayer->setComputerTrainPlayable();
+            }
             humanPlayer->setHumanTrainPlayable();
         }
         std::vector<Tile> bestTiles;
         std::vector<char> trainsToPlayOn;
         humanPlayer->findBestMove(humanPlayer,computerPlayer,mexicanTrain,m_boneyard, bestTiles, trainsToPlayOn);
         std::string help = "I suggest you play ";
-        help = humanPlayer->interpretBestMove(bestTiles, trainsToPlayOn);
+        help += humanPlayer->interpretBestMove(bestTiles, trainsToPlayOn);
+        //BURBUR
+        //need to remove "was played" from the string returned.
+        std::string wp = " was played";
+        std::string::size_type index = help.find(help.find(wp));
+        if (index != std::string::npos) {
+            help.erase(index, wp.length());
+        }
         std::cout << help;
     }
     else if (userInput == 'q') {
         exit(1);
     }
 
-    
+
 }
 
 const std::vector<Tile> Round::getHands(int whoseHand)
@@ -488,26 +514,4 @@ bool Round::getHumanTurn()
 //
 
 
-/*NEED TO DO:
-Make sure we have afunction to check if player has a valid turn. Easiest way would be to check if there exists a tile that matches
-the hanging tile value.
-if they dont have a turn, make them draw from the boneyard and check if they can play that tile on the ligible trains.
 
--the while(human turn = true) loop thing I have isnt how th epogram should be. when the  player plays a double they should only be allowed to play 1 til
-    unless they have another double
-
-
-bool playerHasMove();
-check what trains are eligible. 
-if statement that will check what trains are playable, and if they  are playable, then 
-call playerHasMove() with the trainTile and engine unit incase train is empty. need to access the players hand. 
-might have to move the playerHasMove class to player class. 
-playerHasmove(int engineUnit, computer/human/mexicanTrain.hangingNumber(),
-does any tile in the players hand match the trains hanging number?
-*/
-
-
-//g1 culture
-//g3 social capital
-//g4 negative social ?
-//g6 ideology

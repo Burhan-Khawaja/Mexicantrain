@@ -9,7 +9,8 @@
 
 class Game {
 public:
-    int getRoundNumber();
+    Game();
+    int const getRoundNumber();
     void setRoundNumber(int roundNum);
     int getHumanScore();
     void setHumanScore(int hScore);
