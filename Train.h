@@ -5,31 +5,47 @@
 
 class Train {
 public:
+
     Train();
-    void addTileFront(Tile tileToAdd);
-    void addTileBack(Tile tileToAdd);
-    Tile getLastTile();
-    Tile getFirstTile();
-    void getLastNumber();
-    void resetTrain();
-    void clearMarker();
-    void setMarker();
-    bool getMarker();
-    void printTrain();
-    void setOrphanDouble();
-    void resetOrphanDouble();
-    bool getOrphanDouble();
+
+    bool const getMarker();
+
+    bool const getOrphanDouble();
+
+    int const getTrainEndNumber();
+
     bool isEmpty();
-    void setTrainEndNumber(int newEndNumber);
-    int getTrainEndNumber();
-    void clearTrain();
+
     std::deque<Tile> getTrainDeque();
+
+    void setTrainEndNumber(int newEndNumber);
+
+    void setMarker();
+
+    void setOrphanDouble();
+
+    void addTileFront(Tile tileToAdd);
+
+    void addTileBack(Tile tileToAdd);
+
+    void resetTrain();
+
+    void clearMarker();
+
+    void printTrain();
+
+    void resetOrphanDouble();
+
+    void clearTrain();
+
 protected:
 private:
-    bool marker;
+    //holds all the tiles of the train
     std::deque<Tile> trainDeque;
+    
+    bool marker;
     bool orphanDouble;
-    //BURBUR testvariable to hold the end number of the train
+    //The train end number is the trains last value that new tiles must match to be added to the train.
     int trainEndNumber;
 
 };
